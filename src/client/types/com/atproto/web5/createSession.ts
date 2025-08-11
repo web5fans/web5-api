@@ -22,7 +22,7 @@ export interface InputSchema {
   identifier: string
   password: string
   /** Ckb address (see: https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0021-ckb-address-format/0021-ckb-address-format.md) */
-  ckbAddr: string
+  ckbAddr?: string
 }
 
 export interface OutputSchema {

@@ -4531,17 +4531,12 @@ export const schemaDict = {
           encoding: 'application/json',
           schema: {
             type: 'object',
-            required: ['handle', 'password', 'signingKey', 'root', 'ckbAddr'],
+            required: ['handle', 'signingKey', 'root', 'ckbAddr'],
             properties: {
               handle: {
                 type: 'string',
                 format: 'handle',
                 description: 'Requested handle for the account.',
-              },
-              password: {
-                type: 'string',
-                description:
-                  'Initial account password. May need to meet instance-specific password strength requirements.',
               },
               signingKey: {
                 type: 'string',
@@ -4584,7 +4579,6 @@ export const schemaDict = {
               },
               did: {
                 type: 'string',
-                format: 'did',
                 description: 'The DID of the new account.',
               },
               didDoc: {
@@ -4621,7 +4615,6 @@ export const schemaDict = {
         properties: {
           did: {
             type: 'string',
-            format: 'did',
           },
           rev: {
             type: 'string',
@@ -4656,7 +4649,7 @@ export const schemaDict = {
           encoding: 'application/json',
           schema: {
             type: 'object',
-            required: ['identifier', 'password', 'ckbAddr'],
+            required: ['identifier', 'password'],
             properties: {
               identifier: {
                 type: 'string',
@@ -4692,7 +4685,6 @@ export const schemaDict = {
               },
               did: {
                 type: 'string',
-                format: 'did',
               },
               didDoc: {
                 type: 'unknown',
@@ -4738,7 +4730,7 @@ export const schemaDict = {
           encoding: 'application/json',
           schema: {
             type: 'object',
-            required: ['repo', 'writes', 'signingKey', 'root', 'ckbAddr'],
+            required: ['repo', 'writes', 'signingKey', 'root'],
             properties: {
               repo: {
                 type: 'string',
@@ -4863,7 +4855,6 @@ export const schemaDict = {
         properties: {
           did: {
             type: 'string',
-            format: 'did',
           },
           rev: {
             type: 'string',
@@ -4907,7 +4898,6 @@ export const schemaDict = {
               },
               did: {
                 type: 'string',
-                format: 'did',
                 description:
                   'Pre-existing atproto DID, being imported to a new account.',
               },
@@ -4930,7 +4920,6 @@ export const schemaDict = {
             properties: {
               did: {
                 type: 'string',
-                format: 'did',
               },
               rev: {
                 type: 'string',
@@ -5027,7 +5016,6 @@ export const schemaDict = {
             properties: {
               did: {
                 type: 'string',
-                format: 'did',
               },
               rev: {
                 type: 'string',

@@ -20,8 +20,6 @@ export interface QueryParams {}
 export interface InputSchema {
   /** Requested handle for the account. */
   handle: string
-  /** Initial account password. May need to meet instance-specific password strength requirements. */
-  password: string
   /** DID PLC signing key to be included in PLC creation operation. */
   signingKey: string
   inviteCode?: string

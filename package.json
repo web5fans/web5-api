@@ -1,6 +1,6 @@
 {
   "name": "web5-api",
-  "version": "0.0.9",
+  "version": "0.0.12",
   "license": "MIT",
   "description": "Client library for atproto and Bluesky",
   "keywords": [

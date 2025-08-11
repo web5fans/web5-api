@@ -12,6 +12,7 @@ import {
   ComAtprotoServerCreateAccount,
   ComAtprotoServerCreateSession,
   ComAtprotoServerGetSession,
+  ComAtprotoWeb5CreateAccount,
   ComAtprotoServerNS,
   ComAtprotoWeb5NS,
 } from './client'
@@ -147,9 +148,9 @@ export class AtpAgent extends Agent {
   }
 
   async web5Login(
-    opts: AtpAgentLoginOpts,
+    opts: AtpAgentWeb5LoginOpts,
   ): Promise<ComAtprotoServerCreateSession.Response> {
-    return this.sessionManager.login(opts)
+    return this.sessionManager.web5Login(opts)
   }
 
   async logout(): Promise<void> {
@@ -298,6 +299,34 @@ export class CredentialSession implements SessionManager {
         handle: res.data.handle,
         did: res.data.did,
         email: data.email,
+        emailConfirmed: false,
+        emailAuthFactor: false,
+        active: true,
+      }
+      this.persistSession?.('create', this.session)
+      this._updateApiEndpoint(res.data.didDoc)
+      return res
+    } catch (e) {
+      this.session = undefined
+      this.persistSession?.('create-failed', undefined)
+      throw e
+    }
+  }
+
+    /**
+   * Create a new account and hydrate its session in this agent.
+   */
+  async web5CreateAccount(
+    data: ComAtprotoWeb5CreateAccount.InputSchema,
+    opts?: ComAtprotoWeb5CreateAccount.CallOptions,
+  ): Promise<ComAtprotoWeb5CreateAccount.Response> {
+    try {
+      const res = await this.web5.createAccount(data, opts)
+      this.session = {
+        accessJwt: res.data.accessJwt,
+        refreshJwt: res.data.refreshJwt,
+        handle: res.data.handle,
+        did: res.data.did,
         emailConfirmed: false,
         emailAuthFactor: false,
         active: true,
