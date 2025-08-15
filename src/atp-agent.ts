@@ -141,6 +141,13 @@ export class AtpAgent extends Agent {
     return this.sessionManager.createAccount(data, opts)
   }
 
+  async web5CreateAccount(
+    data: ComAtprotoWeb5CreateAccount.InputSchema,
+    opts?: ComAtprotoWeb5CreateAccount.CallOptions,
+  ): Promise<ComAtprotoWeb5CreateAccount.Response> {
+    return this.sessionManager.web5CreateAccount(data, opts)
+  }
+
   async login(
     opts: AtpAgentLoginOpts,
   ): Promise<ComAtprotoServerCreateSession.Response> {

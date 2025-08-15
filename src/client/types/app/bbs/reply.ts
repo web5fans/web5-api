@@ -1,0 +1,70 @@
+/**
+ * GENERATED CODE - DO NOT MODIFY
+ */
+import { type ValidationResult, BlobRef } from '@atproto/lexicon'
+import { CID } from 'multiformats/cid'
+import { validate as _validate } from '../../../lexicons'
+import { type $Typed, is$typed as _is$typed, type OmitKey } from '../../../util'
+import type * as AppBskyRichtextFacet from '../bsky/richtext/facet.js'
+import type * as AppBskyEmbedImages from '../bsky/embed/images.js'
+import type * as AppBskyEmbedVideo from '../bsky/embed/video.js'
+import type * as AppBskyEmbedExternal from '../bsky/embed/external.js'
+import type * as AppBskyEmbedRecord from '../bsky/embed/record.js'
+import type * as AppBskyEmbedRecordWithMedia from '../bsky/embed/recordWithMedia.js'
+import type * as ComAtprotoLabelDefs from '../../com/atproto/label/defs.js'
+
+const is$typed = _is$typed,
+  validate = _validate
+const id = 'app.bbs.reply'
+
+export interface Record {
+  $type: 'app.bbs.reply'
+  /** The primary post content. May be an empty string, if there are embeds. */
+  text: string
+  /** Annotations of text (mentions, URLs, hashtags, etc) */
+  facets?: AppBskyRichtextFacet.Main[]
+  root: string
+  parent: string
+  embed?:
+    | $Typed<AppBskyEmbedImages.Main>
+    | $Typed<AppBskyEmbedVideo.Main>
+    | $Typed<AppBskyEmbedExternal.Main>
+    | $Typed<AppBskyEmbedRecord.Main>
+    | $Typed<AppBskyEmbedRecordWithMedia.Main>
+    | { $type: string }
+  /** Indicates human language of post primary text content. */
+  langs?: string[]
+  labels?: $Typed<ComAtprotoLabelDefs.SelfLabels> | { $type: string }
+  /** Additional hashtags, in addition to any included in post text and facets. */
+  tags?: string[]
+  /** Client-declared timestamp when this post was originally created. */
+  createdAt: string
+  [k: string]: unknown
+}
+
+const hashRecord = 'main'
+
+export function isRecord<V>(v: V) {
+  return is$typed(v, id, hashRecord)
+}
+
+export function validateRecord<V>(v: V) {
+  return validate<Record & V>(v, id, hashRecord, true)
+}
+
+/** Deprecated. Use app.bsky.richtext instead -- A text segment. Start is inclusive, end is exclusive. Indices are for utf16-encoded strings. */
+export interface TextSlice {
+  $type?: 'app.bbs.reply#textSlice'
+  start: number
+  end: number
+}
+
+const hashTextSlice = 'textSlice'
+
+export function isTextSlice<V>(v: V) {
+  return is$typed(v, id, hashTextSlice)
+}
+
+export function validateTextSlice<V>(v: V) {
+  return validate<TextSlice & V>(v, id, hashTextSlice)
+}

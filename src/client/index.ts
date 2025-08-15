@@ -206,6 +206,8 @@ import * as AppBskyVideoDefs from './types/app/bsky/video/defs.js'
 import * as AppBskyVideoGetJobStatus from './types/app/bsky/video/getJobStatus.js'
 import * as AppBskyVideoGetUploadLimits from './types/app/bsky/video/getUploadLimits.js'
 import * as AppBskyVideoUploadVideo from './types/app/bsky/video/uploadVideo.js'
+import * as AppBbsPost from './types/app/bbs/post.js'
+import * as AppBbsReply from './types/app/bbs/reply.js'
 import * as ChatBskyActorDeclaration from './types/chat/bsky/actor/declaration.js'
 import * as ChatBskyActorDefs from './types/chat/bsky/actor/defs.js'
 import * as ChatBskyActorDeleteAccount from './types/chat/bsky/actor/deleteAccount.js'
@@ -472,6 +474,8 @@ export * as AppBskyVideoDefs from './types/app/bsky/video/defs.js'
 export * as AppBskyVideoGetJobStatus from './types/app/bsky/video/getJobStatus.js'
 export * as AppBskyVideoGetUploadLimits from './types/app/bsky/video/getUploadLimits.js'
 export * as AppBskyVideoUploadVideo from './types/app/bsky/video/uploadVideo.js'
+export * as AppBbsPost from './types/app/bbs/post.js'
+export * as AppBbsReply from './types/app/bbs/reply.js'
 export * as ChatBskyActorDeclaration from './types/chat/bsky/actor/declaration.js'
 export * as ChatBskyActorDefs from './types/chat/bsky/actor/defs.js'
 export * as ChatBskyActorDeleteAccount from './types/chat/bsky/actor/deleteAccount.js'
@@ -1780,10 +1784,12 @@ export class ComAtprotoWeb5NS {
 export class AppNS {
   _client: XrpcClient
   bsky: AppBskyNS
+  bbs: AppBbsNS
 
   constructor(client: XrpcClient) {
     this._client = client
     this.bsky = new AppBskyNS(client)
+    this.bbs = new AppBbsNS(client)
   }
 }
 
@@ -3721,6 +3727,140 @@ export class AppBskyVideoNS {
     opts?: AppBskyVideoUploadVideo.CallOptions,
   ): Promise<AppBskyVideoUploadVideo.Response> {
     return this._client.call('app.bsky.video.uploadVideo', opts?.qp, data, opts)
+  }
+}
+
+export class AppBbsNS {
+  _client: XrpcClient
+  post: AppBbsPostRecord
+  reply: AppBbsReplyRecord
+
+  constructor(client: XrpcClient) {
+    this._client = client
+    this.post = new AppBbsPostRecord(client)
+    this.reply = new AppBbsReplyRecord(client)
+  }
+}
+
+export class AppBbsPostRecord {
+  _client: XrpcClient
+
+  constructor(client: XrpcClient) {
+    this._client = client
+  }
+
+  async list(
+    params: OmitKey<ComAtprotoRepoListRecords.QueryParams, 'collection'>,
+  ): Promise<{
+    cursor?: string
+    records: { uri: string; value: AppBbsPost.Record }[]
+  }> {
+    const res = await this._client.call('com.atproto.repo.listRecords', {
+      collection: 'app.bbs.post',
+      ...params,
+    })
+    return res.data
+  }
+
+  async get(
+    params: OmitKey<ComAtprotoRepoGetRecord.QueryParams, 'collection'>,
+  ): Promise<{ uri: string; cid: string; value: AppBbsPost.Record }> {
+    const res = await this._client.call('com.atproto.repo.getRecord', {
+      collection: 'app.bbs.post',
+      ...params,
+    })
+    return res.data
+  }
+
+  async create(
+    params: OmitKey<
+      ComAtprotoRepoCreateRecord.InputSchema,
+      'collection' | 'record'
+    >,
+    record: Un$Typed<AppBbsPost.Record>,
+    headers?: Record<string, string>,
+  ): Promise<{ uri: string; cid: string }> {
+    const collection = 'app.bbs.post'
+    const res = await this._client.call(
+      'com.atproto.repo.createRecord',
+      undefined,
+      { collection, ...params, record: { ...record, $type: collection } },
+      { encoding: 'application/json', headers },
+    )
+    return res.data
+  }
+
+  async delete(
+    params: OmitKey<ComAtprotoRepoDeleteRecord.InputSchema, 'collection'>,
+    headers?: Record<string, string>,
+  ): Promise<void> {
+    await this._client.call(
+      'com.atproto.repo.deleteRecord',
+      undefined,
+      { collection: 'app.bbs.post', ...params },
+      { headers },
+    )
+  }
+}
+
+export class AppBbsReplyRecord {
+  _client: XrpcClient
+
+  constructor(client: XrpcClient) {
+    this._client = client
+  }
+
+  async list(
+    params: OmitKey<ComAtprotoRepoListRecords.QueryParams, 'collection'>,
+  ): Promise<{
+    cursor?: string
+    records: { uri: string; value: AppBbsReply.Record }[]
+  }> {
+    const res = await this._client.call('com.atproto.repo.listRecords', {
+      collection: 'app.bbs.reply',
+      ...params,
+    })
+    return res.data
+  }
+
+  async get(
+    params: OmitKey<ComAtprotoRepoGetRecord.QueryParams, 'collection'>,
+  ): Promise<{ uri: string; cid: string; value: AppBbsReply.Record }> {
+    const res = await this._client.call('com.atproto.repo.getRecord', {
+      collection: 'app.bbs.reply',
+      ...params,
+    })
+    return res.data
+  }
+
+  async create(
+    params: OmitKey<
+      ComAtprotoRepoCreateRecord.InputSchema,
+      'collection' | 'record'
+    >,
+    record: Un$Typed<AppBbsReply.Record>,
+    headers?: Record<string, string>,
+  ): Promise<{ uri: string; cid: string }> {
+    const collection = 'app.bbs.reply'
+    const res = await this._client.call(
+      'com.atproto.repo.createRecord',
+      undefined,
+      { collection, ...params, record: { ...record, $type: collection } },
+      { encoding: 'application/json', headers },
+    )
+    return res.data
+  }
+
+  async delete(
+    params: OmitKey<ComAtprotoRepoDeleteRecord.InputSchema, 'collection'>,
+    headers?: Record<string, string>,
+  ): Promise<void> {
+    await this._client.call(
+      'com.atproto.repo.deleteRecord',
+      undefined,
+      { collection: 'app.bbs.reply', ...params },
+      { headers },
+    )
   }
 }
 

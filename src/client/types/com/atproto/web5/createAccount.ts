@@ -23,6 +23,8 @@ export interface InputSchema {
   /** DID PLC signing key to be included in PLC creation operation. */
   signingKey: string
   inviteCode?: string
+  /** Initial account password. May need to meet instance-specific password strength requirements. */
+  password?: string
   /** Ckb address (see: https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0021-ckb-address-format/0021-ckb-address-format.md) */
   ckbAddr: string
   root: SignedRoot

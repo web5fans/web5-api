@@ -4546,6 +4546,11 @@ export const schemaDict = {
               inviteCode: {
                 type: 'string',
               },
+              password: {
+                type: 'string',
+                description:
+                  'Initial account password. May need to meet instance-specific password strength requirements.',
+              },
               ckbAddr: {
                 type: 'string',
                 description:
@@ -11664,6 +11669,230 @@ export const schemaDict = {
       },
     },
   },
+  AppBbsPost: {
+    lexicon: 1,
+    id: 'app.bbs.post',
+    defs: {
+      main: {
+        type: 'record',
+        description: 'Record containing a Bluesky post.',
+        key: 'tid',
+        record: {
+          type: 'object',
+          required: ['text', 'createdAt', 'section_id', 'title'],
+          properties: {
+            section_id: {
+              type: 'integer',
+              description: 'Chose bbs section',
+            },
+            title: {
+              type: 'string',
+              description: 'BBS Post title',
+            },
+            text: {
+              type: 'string',
+              maxLength: 1000000,
+              maxGraphemes: 10000,
+              description:
+                'The primary post content. May be an empty string, if there are embeds.',
+            },
+            entities: {
+              type: 'array',
+              description: 'DEPRECATED: replaced by app.bsky.richtext.facet.',
+              items: {
+                type: 'ref',
+                ref: 'lex:app.bbs.post#entity',
+              },
+            },
+            facets: {
+              type: 'array',
+              description:
+                'Annotations of text (mentions, URLs, hashtags, etc)',
+              items: {
+                type: 'ref',
+                ref: 'lex:app.bsky.richtext.facet',
+              },
+            },
+            embed: {
+              type: 'union',
+              refs: [
+                'lex:app.bsky.embed.images',
+                'lex:app.bsky.embed.video',
+                'lex:app.bsky.embed.external',
+                'lex:app.bsky.embed.record',
+                'lex:app.bsky.embed.recordWithMedia',
+              ],
+            },
+            langs: {
+              type: 'array',
+              description:
+                'Indicates human language of post primary text content.',
+              maxLength: 3,
+              items: {
+                type: 'string',
+                format: 'language',
+              },
+            },
+            labels: {
+              type: 'union',
+              description:
+                'Self-label values for this post. Effectively content warnings.',
+              refs: ['lex:com.atproto.label.defs#selfLabels'],
+            },
+            tags: {
+              type: 'array',
+              description:
+                'Additional hashtags, in addition to any included in post text and facets.',
+              maxLength: 8,
+              items: {
+                type: 'string',
+                maxLength: 640,
+                maxGraphemes: 64,
+              },
+            },
+            createdAt: {
+              type: 'string',
+              format: 'datetime',
+              description:
+                'Client-declared timestamp when this post was originally created.',
+            },
+          },
+        },
+      },
+      entity: {
+        type: 'object',
+        description: 'Deprecated: use facets instead.',
+        required: ['index', 'type', 'value'],
+        properties: {
+          index: {
+            type: 'ref',
+            ref: 'lex:app.bbs.post#textSlice',
+          },
+          type: {
+            type: 'string',
+            description: "Expected values are 'mention' and 'link'.",
+          },
+          value: {
+            type: 'string',
+          },
+        },
+      },
+      textSlice: {
+        type: 'object',
+        description:
+          'Deprecated. Use app.bsky.richtext instead -- A text segment. Start is inclusive, end is exclusive. Indices are for utf16-encoded strings.',
+        required: ['start', 'end'],
+        properties: {
+          start: {
+            type: 'integer',
+            minimum: 0,
+          },
+          end: {
+            type: 'integer',
+            minimum: 0,
+          },
+        },
+      },
+    },
+  },
+  AppBbsReply: {
+    lexicon: 1,
+    id: 'app.bbs.reply',
+    defs: {
+      main: {
+        type: 'record',
+        description: 'Record containing a Bluesky post.',
+        key: 'tid',
+        record: {
+          type: 'object',
+          required: ['text', 'createdAt', 'root', 'parent'],
+          properties: {
+            text: {
+              type: 'string',
+              maxLength: 1000000,
+              maxGraphemes: 10000,
+              description:
+                'The primary post content. May be an empty string, if there are embeds.',
+            },
+            facets: {
+              type: 'array',
+              description:
+                'Annotations of text (mentions, URLs, hashtags, etc)',
+              items: {
+                type: 'ref',
+                ref: 'lex:app.bsky.richtext.facet',
+              },
+            },
+            root: {
+              type: 'string',
+            },
+            parent: {
+              type: 'string',
+            },
+            embed: {
+              type: 'union',
+              refs: [
+                'lex:app.bsky.embed.images',
+                'lex:app.bsky.embed.video',
+                'lex:app.bsky.embed.external',
+                'lex:app.bsky.embed.record',
+                'lex:app.bsky.embed.recordWithMedia',
+              ],
+            },
+            langs: {
+              type: 'array',
+              description:
+                'Indicates human language of post primary text content.',
+              maxLength: 3,
+              items: {
+                type: 'string',
+                format: 'language',
+              },
+            },
+            labels: {
+              type: 'union',
+              description:
+                'Self-label values for this post. Effectively content warnings.',
+              refs: ['lex:com.atproto.label.defs#selfLabels'],
+            },
+            tags: {
+              type: 'array',
+              description:
+                'Additional hashtags, in addition to any included in post text and facets.',
+              maxLength: 8,
+              items: {
+                type: 'string',
+                maxLength: 640,
+                maxGraphemes: 64,
+              },
+            },
+            createdAt: {
+              type: 'string',
+              format: 'datetime',
+              description:
+                'Client-declared timestamp when this post was originally created.',
+            },
+          },
+        },
+      },
+      textSlice: {
+        type: 'object',
+        description:
+          'Deprecated. Use app.bsky.richtext instead -- A text segment. Start is inclusive, end is exclusive. Indices are for utf16-encoded strings.',
+        required: ['start', 'end'],
+        properties: {
+          start: {
+            type: 'integer',
+            minimum: 0,
+          },
+          end: {
+            type: 'integer',
+            minimum: 0,
+          },
+        },
+      },
+    },
+  },
   ChatBskyActorDeclaration: {
     lexicon: 1,
     id: 'chat.bsky.actor.declaration',
@@ -16845,6 +17074,8 @@ export const ids = {
   AppBskyVideoGetJobStatus: 'app.bsky.video.getJobStatus',
   AppBskyVideoGetUploadLimits: 'app.bsky.video.getUploadLimits',
   AppBskyVideoUploadVideo: 'app.bsky.video.uploadVideo',
+  AppBbsPost: 'app.bbs.post',
+  AppBbsReply: 'app.bbs.reply',
   ChatBskyActorDeclaration: 'chat.bsky.actor.declaration',
   ChatBskyActorDefs: 'chat.bsky.actor.defs',
   ChatBskyActorDeleteAccount: 'chat.bsky.actor.deleteAccount',
