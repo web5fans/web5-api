@@ -101,10 +101,12 @@ import * as ComAtprotoTempCheckSignupQueue from './types/com/atproto/temp/checkS
 import * as ComAtprotoTempFetchLabels from './types/com/atproto/temp/fetchLabels.js'
 import * as ComAtprotoTempRequestPhoneVerification from './types/com/atproto/temp/requestPhoneVerification.js'
 import * as ComAtprotoWeb5CreateAccount from './types/com/atproto/web5/createAccount.js'
-import * as ComAtprotoWeb5CreateSession from './types/com/atproto/web5/createSession.js'
 import * as ComAtprotoWeb5DirectWrites from './types/com/atproto/web5/directWrites.js'
+import * as ComAtprotoWeb5IndexAction from './types/com/atproto/web5/indexAction.js'
 import * as ComAtprotoWeb5PreCreateAccount from './types/com/atproto/web5/preCreateAccount.js'
 import * as ComAtprotoWeb5PreDirectWrites from './types/com/atproto/web5/preDirectWrites.js'
+import * as ComAtprotoWeb5PreIndexAction from './types/com/atproto/web5/preIndexAction.js'
+import * as ComAtprotoWeb5UploadBlob from './types/com/atproto/web5/uploadBlob.js'
 import * as AppBskyActorDefs from './types/app/bsky/actor/defs.js'
 import * as AppBskyActorGetPreferences from './types/app/bsky/actor/getPreferences.js'
 import * as AppBskyActorGetProfile from './types/app/bsky/actor/getProfile.js'
@@ -369,10 +371,12 @@ export * as ComAtprotoTempCheckSignupQueue from './types/com/atproto/temp/checkS
 export * as ComAtprotoTempFetchLabels from './types/com/atproto/temp/fetchLabels.js'
 export * as ComAtprotoTempRequestPhoneVerification from './types/com/atproto/temp/requestPhoneVerification.js'
 export * as ComAtprotoWeb5CreateAccount from './types/com/atproto/web5/createAccount.js'
-export * as ComAtprotoWeb5CreateSession from './types/com/atproto/web5/createSession.js'
 export * as ComAtprotoWeb5DirectWrites from './types/com/atproto/web5/directWrites.js'
+export * as ComAtprotoWeb5IndexAction from './types/com/atproto/web5/indexAction.js'
 export * as ComAtprotoWeb5PreCreateAccount from './types/com/atproto/web5/preCreateAccount.js'
 export * as ComAtprotoWeb5PreDirectWrites from './types/com/atproto/web5/preDirectWrites.js'
+export * as ComAtprotoWeb5PreIndexAction from './types/com/atproto/web5/preIndexAction.js'
+export * as ComAtprotoWeb5UploadBlob from './types/com/atproto/web5/uploadBlob.js'
 export * as AppBskyActorDefs from './types/app/bsky/actor/defs.js'
 export * as AppBskyActorGetPreferences from './types/app/bsky/actor/getPreferences.js'
 export * as AppBskyActorGetProfile from './types/app/bsky/actor/getProfile.js'
@@ -1736,17 +1740,6 @@ export class ComAtprotoWeb5NS {
       })
   }
 
-  createSession(
-    data?: ComAtprotoWeb5CreateSession.InputSchema,
-    opts?: ComAtprotoWeb5CreateSession.CallOptions,
-  ): Promise<ComAtprotoWeb5CreateSession.Response> {
-    return this._client
-      .call('com.atproto.web5.createSession', opts?.qp, data, opts)
-      .catch((e) => {
-        throw ComAtprotoWeb5CreateSession.toKnownErr(e)
-      })
-  }
-
   directWrites(
     data?: ComAtprotoWeb5DirectWrites.InputSchema,
     opts?: ComAtprotoWeb5DirectWrites.CallOptions,
@@ -1755,6 +1748,17 @@ export class ComAtprotoWeb5NS {
       .call('com.atproto.web5.directWrites', opts?.qp, data, opts)
       .catch((e) => {
         throw ComAtprotoWeb5DirectWrites.toKnownErr(e)
+      })
+  }
+
+  indexAction(
+    data?: ComAtprotoWeb5IndexAction.InputSchema,
+    opts?: ComAtprotoWeb5IndexAction.CallOptions,
+  ): Promise<ComAtprotoWeb5IndexAction.Response> {
+    return this._client
+      .call('com.atproto.web5.indexAction', opts?.qp, data, opts)
+      .catch((e) => {
+        throw ComAtprotoWeb5IndexAction.toKnownErr(e)
       })
   }
 
@@ -1778,6 +1782,29 @@ export class ComAtprotoWeb5NS {
       .catch((e) => {
         throw ComAtprotoWeb5PreDirectWrites.toKnownErr(e)
       })
+  }
+
+  preIndexAction(
+    data?: ComAtprotoWeb5PreIndexAction.InputSchema,
+    opts?: ComAtprotoWeb5PreIndexAction.CallOptions,
+  ): Promise<ComAtprotoWeb5PreIndexAction.Response> {
+    return this._client
+      .call('com.atproto.web5.preIndexAction', opts?.qp, data, opts)
+      .catch((e) => {
+        throw ComAtprotoWeb5PreIndexAction.toKnownErr(e)
+      })
+  }
+
+  uploadBlob(
+    data?: ComAtprotoWeb5UploadBlob.InputSchema,
+    opts?: ComAtprotoWeb5UploadBlob.CallOptions,
+  ): Promise<ComAtprotoWeb5UploadBlob.Response> {
+    return this._client.call(
+      'com.atproto.web5.uploadBlob',
+      opts?.qp,
+      data,
+      opts,
+    )
   }
 }
 

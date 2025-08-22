@@ -15,6 +15,7 @@ import {
   ComAtprotoWeb5CreateAccount,
   ComAtprotoServerNS,
   ComAtprotoWeb5NS,
+  ComAtprotoWeb5IndexAction,
 } from './client'
 import { schemas } from './client/lexicons'
 import { SessionManager } from './session-manager'
@@ -156,7 +157,7 @@ export class AtpAgent extends Agent {
 
   async web5Login(
     opts: AtpAgentWeb5LoginOpts,
-  ): Promise<ComAtprotoServerCreateSession.Response> {
+  ): Promise<ComAtprotoWeb5IndexAction.Response> {
     return this.sessionManager.web5Login(opts)
   }
 
@@ -387,27 +388,35 @@ export class CredentialSession implements SessionManager {
    */
   async web5Login(
     opts: AtpAgentWeb5LoginOpts,
-  ): Promise<ComAtprotoServerCreateSession.Response> {
+  ): Promise<ComAtprotoWeb5IndexAction.Response> {
     try {
-      const res = await this.web5.createSession({
-        identifier: opts.identifier,
-        password: opts.password,
+      const res = await this.web5.indexAction({
+        did: opts.did,
+        signingKey: opts.signingKey,
+        message: opts.message,
+        signedBytes: opts.signedBytes,
         ckbAddr: opts.ckbAddr,
+        index: opts.index
       })
-      this.session = {
-        accessJwt: res.data.accessJwt,
-        refreshJwt: res.data.refreshJwt,
-        handle: res.data.handle,
-        did: res.data.did,
-        email: res.data.email,
-        emailConfirmed: res.data.emailConfirmed,
-        emailAuthFactor: res.data.emailAuthFactor,
-        active: res.data.active ?? true,
-        status: res.data.status,
+      if (ComAtprotoWeb5IndexAction.isCreateSessionResult(res.data.result)) {
+        const result = res.data.result as ComAtprotoWeb5IndexAction.CreateSessionResult
+        this.session = {
+          accessJwt: result.accessJwt,
+          refreshJwt: result.refreshJwt,
+          handle: result.handle,
+          did: result.did,
+          email: result.email,
+          emailConfirmed: result.emailConfirmed,
+          emailAuthFactor: result.emailAuthFactor,
+          active: result.active ?? true,
+          status: result.status,
+        }
+        this._updateApiEndpoint(result.didDoc)
+        this.persistSession?.('create', this.session)
+        return res
+      } else {
+        throw "invalid responses type, need createSessionResult"
       }
-      this._updateApiEndpoint(res.data.didDoc)
-      this.persistSession?.('create', this.session)
-      return res
     } catch (e) {
       this.session = undefined
       this.persistSession?.('create-failed', undefined)

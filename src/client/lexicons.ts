@@ -4643,86 +4643,6 @@ export const schemaDict = {
       },
     },
   },
-  ComAtprotoWeb5CreateSession: {
-    lexicon: 1,
-    id: 'com.atproto.web5.createSession',
-    defs: {
-      main: {
-        type: 'procedure',
-        description: 'Create an authentication session.',
-        input: {
-          encoding: 'application/json',
-          schema: {
-            type: 'object',
-            required: ['identifier', 'password'],
-            properties: {
-              identifier: {
-                type: 'string',
-                description:
-                  'Handle or other identifier supported by the server for the authenticating user.',
-              },
-              password: {
-                type: 'string',
-              },
-              ckbAddr: {
-                type: 'string',
-                description:
-                  'Ckb address (see: https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0021-ckb-address-format/0021-ckb-address-format.md)',
-              },
-            },
-          },
-        },
-        output: {
-          encoding: 'application/json',
-          schema: {
-            type: 'object',
-            required: ['accessJwt', 'refreshJwt', 'handle', 'did'],
-            properties: {
-              accessJwt: {
-                type: 'string',
-              },
-              refreshJwt: {
-                type: 'string',
-              },
-              handle: {
-                type: 'string',
-                format: 'handle',
-              },
-              did: {
-                type: 'string',
-              },
-              didDoc: {
-                type: 'unknown',
-              },
-              email: {
-                type: 'string',
-              },
-              emailConfirmed: {
-                type: 'boolean',
-              },
-              emailAuthFactor: {
-                type: 'boolean',
-              },
-              active: {
-                type: 'boolean',
-              },
-              status: {
-                type: 'string',
-                description:
-                  'If active=false, this optional field indicates a possible reason for why the account is not active. If active=false and no status is supplied, then the host makes no claim for why the repository is no longer being hosted.',
-                knownValues: ['takendown', 'suspended', 'deactivated'],
-              },
-            },
-          },
-        },
-        errors: [
-          {
-            name: 'AccountTakedown',
-          },
-        ],
-      },
-    },
-  },
   ComAtprotoWeb5DirectWrites: {
     lexicon: 1,
     id: 'com.atproto.web5.directWrites',
@@ -4880,6 +4800,129 @@ export const schemaDict = {
             type: 'string',
           },
         },
+      },
+    },
+  },
+  ComAtprotoWeb5IndexAction: {
+    lexicon: 1,
+    id: 'com.atproto.web5.indexAction',
+    defs: {
+      main: {
+        type: 'procedure',
+        description: 'Create an index action.',
+        input: {
+          encoding: 'application/json',
+          schema: {
+            type: 'object',
+            required: ['did', 'signingKey', 'message', 'signedBytes', 'index'],
+            properties: {
+              did: {
+                type: 'string',
+                description:
+                  'Identifier supported by the server for the authenticating user.',
+              },
+              signingKey: {
+                type: 'string',
+                description:
+                  'DID PLC signing key to be included in PLC creation operation.',
+              },
+              message: {
+                type: 'string',
+              },
+              signedBytes: {
+                type: 'string',
+              },
+              ckbAddr: {
+                type: 'string',
+                description:
+                  'Ckb address (see: https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0021-ckb-address-format/0021-ckb-address-format.md)',
+              },
+              index: {
+                type: 'union',
+                refs: [
+                  'lex:com.atproto.web5.indexAction#createSession',
+                  'lex:com.atproto.web5.indexAction#deleteAccount',
+                ],
+              },
+            },
+          },
+        },
+        output: {
+          encoding: 'application/json',
+          schema: {
+            type: 'object',
+            required: ['result'],
+            properties: {
+              result: {
+                type: 'union',
+                refs: [
+                  'lex:com.atproto.web5.indexAction#createSessionResult',
+                  'lex:com.atproto.web5.indexAction#deleteAccountResult',
+                ],
+              },
+            },
+          },
+        },
+        errors: [
+          {
+            name: 'AccountTakedown',
+          },
+        ],
+      },
+      createSession: {
+        type: 'object',
+        required: [],
+        properties: {},
+      },
+      deleteAccount: {
+        type: 'object',
+        required: [],
+        properties: {},
+      },
+      createSessionResult: {
+        type: 'object',
+        required: ['accessJwt', 'refreshJwt', 'handle', 'did'],
+        properties: {
+          accessJwt: {
+            type: 'string',
+          },
+          refreshJwt: {
+            type: 'string',
+          },
+          handle: {
+            type: 'string',
+            format: 'handle',
+          },
+          did: {
+            type: 'string',
+          },
+          didDoc: {
+            type: 'unknown',
+          },
+          email: {
+            type: 'string',
+          },
+          emailConfirmed: {
+            type: 'boolean',
+          },
+          emailAuthFactor: {
+            type: 'boolean',
+          },
+          active: {
+            type: 'boolean',
+          },
+          status: {
+            type: 'string',
+            description:
+              'If active=false, this optional field indicates a possible reason for why the account is not active. If active=false and no status is supplied, then the host makes no claim for why the repository is no longer being hosted.',
+            knownValues: ['takendown', 'suspended', 'deactivated'],
+          },
+        },
+      },
+      deleteAccountResult: {
+        type: 'object',
+        required: [],
+        properties: {},
       },
     },
   },
@@ -5102,6 +5145,104 @@ export const schemaDict = {
           rkey: {
             type: 'string',
             format: 'record-key',
+          },
+        },
+      },
+    },
+  },
+  ComAtprotoWeb5PreIndexAction: {
+    lexicon: 1,
+    id: 'com.atproto.web5.preIndexAction',
+    defs: {
+      main: {
+        type: 'procedure',
+        description: 'Pre Create an index action.',
+        input: {
+          encoding: 'application/json',
+          schema: {
+            type: 'object',
+            required: ['did', 'index'],
+            properties: {
+              did: {
+                type: 'string',
+                description:
+                  'Identifier supported by the server for the authenticating user.',
+              },
+              ckbAddr: {
+                type: 'string',
+                description:
+                  'Ckb address (see: https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0021-ckb-address-format/0021-ckb-address-format.md)',
+              },
+              index: {
+                type: 'union',
+                refs: [
+                  'lex:com.atproto.web5.preIndexAction#createSession',
+                  'lex:com.atproto.web5.preIndexAction#deleteAccount',
+                ],
+              },
+            },
+          },
+        },
+        output: {
+          encoding: 'application/json',
+          schema: {
+            type: 'object',
+            required: ['did', 'handle', 'message'],
+            properties: {
+              did: {
+                type: 'string',
+              },
+              handle: {
+                type: 'string',
+              },
+              message: {
+                type: 'string',
+              },
+            },
+          },
+        },
+        errors: [
+          {
+            name: 'AccountTakedown',
+          },
+        ],
+      },
+      createSession: {
+        type: 'object',
+        required: [],
+        properties: {},
+      },
+      deleteAccount: {
+        type: 'object',
+        required: [],
+        properties: {},
+      },
+    },
+  },
+  ComAtprotoWeb5UploadBlob: {
+    lexicon: 1,
+    id: 'com.atproto.web5.uploadBlob',
+    defs: {
+      main: {
+        type: 'procedure',
+        description:
+          'Upload a new blob, to be referenced from a repository record. The blob will be deleted if it is not referenced within a time window (eg, minutes). Blob restrictions (mimetype, size, etc) are enforced when the reference is created. Requires auth, implemented by PDS.',
+        input: {
+          encoding: '*/*',
+        },
+        output: {
+          encoding: 'application/json',
+          schema: {
+            type: 'object',
+            required: ['blob'],
+            properties: {
+              blobServer: {
+                type: 'string',
+              },
+              blob: {
+                type: 'blob',
+              },
+            },
           },
         },
       },
@@ -16958,10 +17099,12 @@ export const ids = {
   ComAtprotoTempRequestPhoneVerification:
     'com.atproto.temp.requestPhoneVerification',
   ComAtprotoWeb5CreateAccount: 'com.atproto.web5.createAccount',
-  ComAtprotoWeb5CreateSession: 'com.atproto.web5.createSession',
   ComAtprotoWeb5DirectWrites: 'com.atproto.web5.directWrites',
+  ComAtprotoWeb5IndexAction: 'com.atproto.web5.indexAction',
   ComAtprotoWeb5PreCreateAccount: 'com.atproto.web5.preCreateAccount',
   ComAtprotoWeb5PreDirectWrites: 'com.atproto.web5.preDirectWrites',
+  ComAtprotoWeb5PreIndexAction: 'com.atproto.web5.preIndexAction',
+  ComAtprotoWeb5UploadBlob: 'com.atproto.web5.uploadBlob',
   AppBskyActorDefs: 'app.bsky.actor.defs',
   AppBskyActorGetPreferences: 'app.bsky.actor.getPreferences',
   AppBskyActorGetProfile: 'app.bsky.actor.getProfile',

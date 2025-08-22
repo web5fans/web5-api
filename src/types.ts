@@ -1,4 +1,5 @@
-import { AppBskyActorDefs } from './client'
+import { AppBskyActorDefs, ComAtprotoWeb5IndexAction } from './client'
+import { $Typed } from './client/util'
 import { ModerationPrefs } from './moderation/types'
 
 /**
@@ -54,9 +55,15 @@ export interface AtpAgentLoginOpts {
  * AtpAgent web5Login() opts
  */
 export interface AtpAgentWeb5LoginOpts {
-  identifier: string
-  password: string
-  ckbAddr: string
+  /** Identifier supported by the server for the authenticating user. */
+  did: string
+  /** DID PLC signing key to be included in PLC creation operation. */
+  signingKey: string
+  message: string
+  signedBytes: string
+  /** Ckb address (see: https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0021-ckb-address-format/0021-ckb-address-format.md) */
+  ckbAddr?: string
+  index: $Typed<ComAtprotoWeb5IndexAction.CreateSession>
 }
 
 /**

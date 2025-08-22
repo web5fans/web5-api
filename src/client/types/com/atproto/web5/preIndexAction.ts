@@ -13,30 +13,22 @@ import {
 
 const is$typed = _is$typed,
   validate = _validate
-const id = 'com.atproto.web5.createSession'
+const id = 'com.atproto.web5.preIndexAction'
 
 export interface QueryParams {}
 
 export interface InputSchema {
-  /** Handle or other identifier supported by the server for the authenticating user. */
-  identifier: string
-  password: string
+  /** Identifier supported by the server for the authenticating user. */
+  did: string
   /** Ckb address (see: https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0021-ckb-address-format/0021-ckb-address-format.md) */
   ckbAddr?: string
+  index: $Typed<CreateSession> | $Typed<DeleteAccount> | { $type: string }
 }
 
 export interface OutputSchema {
-  accessJwt: string
-  refreshJwt: string
-  handle: string
   did: string
-  didDoc?: { [_ in string]: unknown }
-  email?: string
-  emailConfirmed?: boolean
-  emailAuthFactor?: boolean
-  active?: boolean
-  /** If active=false, this optional field indicates a possible reason for why the account is not active. If active=false and no status is supplied, then the host makes no claim for why the repository is no longer being hosted. */
-  status?: 'takendown' | 'suspended' | 'deactivated' | (string & {})
+  handle: string
+  message: string
 }
 
 export interface CallOptions {
@@ -64,4 +56,32 @@ export function toKnownErr(e: any) {
   }
 
   return e
+}
+
+export interface CreateSession {
+  $type?: 'com.atproto.web5.preIndexAction#createSession'
+}
+
+const hashCreateSession = 'createSession'
+
+export function isCreateSession<V>(v: V) {
+  return is$typed(v, id, hashCreateSession)
+}
+
+export function validateCreateSession<V>(v: V) {
+  return validate<CreateSession & V>(v, id, hashCreateSession)
+}
+
+export interface DeleteAccount {
+  $type?: 'com.atproto.web5.preIndexAction#deleteAccount'
+}
+
+const hashDeleteAccount = 'deleteAccount'
+
+export function isDeleteAccount<V>(v: V) {
+  return is$typed(v, id, hashDeleteAccount)
+}
+
+export function validateDeleteAccount<V>(v: V) {
+  return validate<DeleteAccount & V>(v, id, hashDeleteAccount)
 }
