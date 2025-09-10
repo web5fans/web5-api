@@ -1,0 +1,114 @@
+{
+  "lexicon": 1,
+  "id": "com.atproto.web5.directWrites",
+  "defs": {
+    "main": {
+      "type": "procedure",
+      "description": "Direct apply a batch transaction of repository creates, updates, and deletes. Requires auth, implemented by PDS.",
+      "input": {
+        "encoding": "application/json",
+        "schema": {
+          "type": "object",
+          "required": ["repo", "writes", "signingKey", "root"],
+          "properties": {
+            "repo": {
+              "type": "string",
+              "format": "at-identifier",
+              "description": "The handle or DID of the repo (aka, current account)."
+            },
+            "validate": {
+              "type": "boolean",
+              "description": "Can be set to 'false' to skip Lexicon schema validation of record data across all operations, 'true' to require it, or leave unset to validate only for known Lexicons."
+            },
+            "writes": {
+              "type": "array",
+              "items": {
+                "type": "union",
+                "refs": ["#create", "#update", "#delete"],
+                "closed": true
+              }
+            },
+            "swapCommit": {
+              "type": "string",
+              "description": "If provided, the entire operation will fail if the current repo commit CID does not match this value. Used to prevent conflicting repo mutations.",
+              "format": "cid"
+            },
+            "signingKey": {
+              "type": "string",
+              "description": "DID PLC signing key to be included in PLC creation operation."
+            },
+            "ckbAddr": {
+              "type": "string",
+              "description": "Ckb address (see: https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0021-ckb-address-format/0021-ckb-address-format.md)"
+            },
+            "root": {
+              "type": "ref",
+              "ref": "#signedRoot",
+              "description": "The signed bytes on did's mst root"
+            }
+          }
+        }
+      },
+      "output": {
+        "encoding": "application/json",
+        "schema": {
+          "type": "object",
+          "required": [],
+          "properties": {}
+        }
+      },
+      "errors": [
+        {
+          "name": "InvalidSwap",
+          "description": "Indicates that the 'swapCommit' parameter did not match current commit."
+        }
+      ]
+    },
+    "create": {
+      "type": "object",
+      "description": "Operation which creates a new record.",
+      "required": ["collection", "value"],
+      "properties": {
+        "collection": { "type": "string", "format": "nsid" },
+        "rkey": {
+          "type": "string",
+          "maxLength": 512,
+          "format": "record-key",
+          "description": "NOTE: maxLength is redundant with record-key format. Keeping it temporarily to ensure backwards compatibility."
+        },
+        "value": { "type": "unknown" }
+      }
+    },
+    "update": {
+      "type": "object",
+      "description": "Operation which updates an existing record.",
+      "required": ["collection", "rkey", "value"],
+      "properties": {
+        "collection": { "type": "string", "format": "nsid" },
+        "rkey": { "type": "string", "format": "record-key" },
+        "value": { "type": "unknown" }
+      }
+    },
+    "delete": {
+      "type": "object",
+      "description": "Operation which deletes an existing record.",
+      "required": ["collection", "rkey"],
+      "properties": {
+        "collection": { "type": "string", "format": "nsid" },
+        "rkey": { "type": "string", "format": "record-key" }
+      }
+    },
+    "signedRoot": {
+      "type": "object",
+      "required": ["did", "rev", "data", "version", "signedBytes"],
+      "properties": {
+        "did": { "type": "string" },
+        "rev": { "type": "string", "format": "tid" },
+        "data": { "type": "string", "format": "cid" },
+        "prev": { "type": "string", "format": "cid" },
+        "version": { "type": "integer" },
+        "signedBytes": { "type": "string" }
+      }
+    }
+  }
+}

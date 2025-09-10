@@ -1,0 +1,83 @@
+{
+  "lexicon": 1,
+  "id": "com.atproto.web5.createAccount",
+  "defs": {
+    "main": {
+      "type": "procedure",
+      "description": "Create an account on web5. Implemented by PDS.",
+      "input": {
+        "encoding": "application/json",
+        "schema": {
+          "type": "object",
+          "required": ["handle", "signingKey", "root", "ckbAddr"],
+          "properties": {
+            "handle": {
+              "type": "string",
+              "format": "handle",
+              "description": "Requested handle for the account."
+            },
+            "signingKey": {
+              "type": "string",
+              "description": "DID PLC signing key to be included in PLC creation operation."
+            },
+            "inviteCode": { "type": "string" },
+            "password": {
+              "type": "string",
+              "description": "Initial account password. May need to meet instance-specific password strength requirements."
+            },
+            "ckbAddr": {
+              "type": "string",
+              "description": "Ckb address (see: https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0021-ckb-address-format/0021-ckb-address-format.md)"
+            },
+            "root": {
+              "type": "ref",
+              "ref": "#signedRoot",
+              "description": "The signed bytes on did's mst root"
+            }
+          }
+        }
+      },
+      "output": {
+        "encoding": "application/json",
+        "schema": {
+          "type": "object",
+          "description": "Account login session returned on successful account creation.",
+          "required": ["accessJwt", "refreshJwt", "handle", "did"],
+          "properties": {
+            "accessJwt": { "type": "string" },
+            "refreshJwt": { "type": "string" },
+            "handle": { "type": "string", "format": "handle" },
+            "did": {
+              "type": "string",
+              "description": "The DID of the new account."
+            },
+            "didDoc": {
+              "type": "unknown",
+              "description": "Complete DID document."
+            }
+          }
+        }
+      },
+      "errors": [
+        { "name": "InvalidHandle" },
+        { "name": "HandleNotAvailable" },
+        { "name": "UnsupportedDomain" },
+        { "name": "UnresolvableDid" },
+        { "name": "IncompatibleDidDoc" },
+        { "name": "InvalidSignature" }
+      ]
+    },
+    "signedRoot": {
+      "type": "object",
+      "required": ["did", "rev", "data", "version", "signedBytes"],
+      "properties": {
+        "did": { "type": "string" },
+        "rev": { "type": "string", "format": "tid" },
+        "data": { "type": "string", "format": "cid" },
+        "prev": { "type": "string", "format": "cid" },
+        "version": { "type": "integer" },
+        "signedBytes": { "type": "string" }
+      }
+    }
+  }
+}

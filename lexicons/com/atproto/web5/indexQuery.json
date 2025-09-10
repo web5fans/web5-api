@@ -1,0 +1,100 @@
+{
+  "lexicon": 1,
+  "id": "com.atproto.web5.indexQuery",
+  "defs": {
+    "main": {
+      "type": "procedure",
+      "description": "Create an index action.",
+      "input": {
+        "encoding": "application/json",
+        "schema": {
+          "type": "object",
+          "required": [],
+          "properties": {
+            "index": {
+              "type": "union",
+              "refs": ["#firstItem", "#secondItem", "#thirdItem", "#fourthItem"]
+            }
+          }
+        }
+      },
+      "output": {
+        "encoding": "application/json",
+        "schema": {
+          "type": "object",
+          "required": ["result"],
+          "properties": {
+            "result": {
+              "type": "union",
+              "refs": [
+                "#firstItemResult",
+                "#secondItemResult",
+                "#thirdItemResult",
+                "#fourthItemResult"
+              ]
+            }
+          }
+        }
+      },
+      "errors": [{ "name": "AccountTakedown" }]
+    },
+    "firstItem": {
+      "type": "object",
+      "required": [],
+      "properties": {}
+    },
+    "secondItem": {
+      "type": "object",
+      "required": [],
+      "properties": {}
+    },
+    "thirdItem": {
+      "type": "object",
+      "required": ["did"],
+      "properties": {
+        "did": {
+          "type": "string",
+          "description": "Identifier supported by the server for the authenticating user."
+        }
+      }
+    },
+    "fourthItem": {
+      "type": "object",
+      "required": ["did"],
+      "properties": {
+        "did": {
+          "type": "string",
+          "description": "Identifier supported by the server for the authenticating user."
+        }
+      }
+    },
+    "firstItemResult": {
+      "type": "object",
+      "required": ["result"],
+      "properties": {
+        "result": { "type": "integer" }
+      }
+    },
+    "secondItemResult": {
+      "type": "object",
+      "required": ["result"],
+      "properties": {
+        "result": { "type": "integer" }
+      }
+    },
+    "thirdItemResult": {
+      "type": "object",
+      "required": ["result"],
+      "properties": {
+        "result": { "type": "integer" }
+      }
+    },
+    "fourthItemResult": {
+      "type": "object",
+      "required": ["result"],
+      "properties": {
+        "result": { "type": "string" }
+      }
+    }
+  }
+}

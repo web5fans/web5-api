@@ -4926,6 +4926,125 @@ export const schemaDict = {
       },
     },
   },
+  ComAtprotoWeb5IndexQuery: {
+    lexicon: 1,
+    id: 'com.atproto.web5.indexQuery',
+    defs: {
+      main: {
+        type: 'procedure',
+        description: 'Create an index action.',
+        input: {
+          encoding: 'application/json',
+          schema: {
+            type: 'object',
+            required: [],
+            properties: {
+              index: {
+                type: 'union',
+                refs: [
+                  'lex:com.atproto.web5.indexQuery#firstItem',
+                  'lex:com.atproto.web5.indexQuery#secondItem',
+                  'lex:com.atproto.web5.indexQuery#thirdItem',
+                  'lex:com.atproto.web5.indexQuery#fourthItem',
+                ],
+              },
+            },
+          },
+        },
+        output: {
+          encoding: 'application/json',
+          schema: {
+            type: 'object',
+            required: ['result'],
+            properties: {
+              result: {
+                type: 'union',
+                refs: [
+                  'lex:com.atproto.web5.indexQuery#firstItemResult',
+                  'lex:com.atproto.web5.indexQuery#secondItemResult',
+                  'lex:com.atproto.web5.indexQuery#thirdItemResult',
+                  'lex:com.atproto.web5.indexQuery#fourthItemResult',
+                ],
+              },
+            },
+          },
+        },
+        errors: [
+          {
+            name: 'AccountTakedown',
+          },
+        ],
+      },
+      firstItem: {
+        type: 'object',
+        required: [],
+        properties: {},
+      },
+      secondItem: {
+        type: 'object',
+        required: [],
+        properties: {},
+      },
+      thirdItem: {
+        type: 'object',
+        required: ['did'],
+        properties: {
+          did: {
+            type: 'string',
+            description:
+              'Identifier supported by the server for the authenticating user.',
+          },
+        },
+      },
+      fourthItem: {
+        type: 'object',
+        required: ['did'],
+        properties: {
+          did: {
+            type: 'string',
+            description:
+              'Identifier supported by the server for the authenticating user.',
+          },
+        },
+      },
+      firstItemResult: {
+        type: 'object',
+        required: ['result'],
+        properties: {
+          result: {
+            type: 'integer',
+          },
+        },
+      },
+      secondItemResult: {
+        type: 'object',
+        required: ['result'],
+        properties: {
+          result: {
+            type: 'integer',
+          },
+        },
+      },
+      thirdItemResult: {
+        type: 'object',
+        required: ['result'],
+        properties: {
+          result: {
+            type: 'integer',
+          },
+        },
+      },
+      fourthItemResult: {
+        type: 'object',
+        required: ['result'],
+        properties: {
+          result: {
+            type: 'string',
+          },
+        },
+      },
+    },
+  },
   ComAtprotoWeb5PreCreateAccount: {
     lexicon: 1,
     id: 'com.atproto.web5.preCreateAccount',
@@ -17101,6 +17220,7 @@ export const ids = {
   ComAtprotoWeb5CreateAccount: 'com.atproto.web5.createAccount',
   ComAtprotoWeb5DirectWrites: 'com.atproto.web5.directWrites',
   ComAtprotoWeb5IndexAction: 'com.atproto.web5.indexAction',
+  ComAtprotoWeb5IndexQuery: 'com.atproto.web5.indexQuery',
   ComAtprotoWeb5PreCreateAccount: 'com.atproto.web5.preCreateAccount',
   ComAtprotoWeb5PreDirectWrites: 'com.atproto.web5.preDirectWrites',
   ComAtprotoWeb5PreIndexAction: 'com.atproto.web5.preIndexAction',

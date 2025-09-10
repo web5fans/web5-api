@@ -1,0 +1,86 @@
+{
+  "lexicon": 1,
+  "id": "com.atproto.web5.indexAction",
+  "defs": {
+    "main": {
+      "type": "procedure",
+      "description": "Create an index action.",
+      "input": {
+        "encoding": "application/json",
+        "schema": {
+          "type": "object",
+          "required": ["did", "signingKey", "message", "signedBytes", "index"],
+          "properties": {
+            "did": {
+              "type": "string",
+              "description": "Identifier supported by the server for the authenticating user."
+            },
+            "signingKey": {
+              "type": "string",
+              "description": "DID PLC signing key to be included in PLC creation operation."
+            },
+            "message": { "type": "string" },
+            "signedBytes": { "type": "string" },
+            "ckbAddr": {
+              "type": "string",
+              "description": "Ckb address (see: https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0021-ckb-address-format/0021-ckb-address-format.md)"
+            },
+            "index": {
+              "type": "union",
+              "refs": ["#createSession", "#deleteAccount"]
+            }
+          }
+        }
+      },
+      "output": {
+        "encoding": "application/json",
+        "schema": {
+          "type": "object",
+          "required": ["result"],
+          "properties": {
+            "result": {
+              "type": "union",
+              "refs": ["#createSessionResult", "#deleteAccountResult"]
+            }
+          }
+        }
+      },
+      "errors": [{ "name": "AccountTakedown" }]
+    },
+    "createSession": {
+      "type": "object",
+      "required": [],
+      "properties": {}
+    },
+    "deleteAccount": {
+      "type": "object",
+      "required": [],
+      "properties": {}
+    },
+    "createSessionResult": {
+      "type": "object",
+      "required": ["accessJwt", "refreshJwt", "handle", "did"],
+      "properties": {
+        "accessJwt": { "type": "string" },
+        "refreshJwt": { "type": "string" },
+        "handle": { "type": "string", "format": "handle" },
+        "did": { "type": "string" },
+        "didDoc": { "type": "unknown" },
+        "email": { "type": "string" },
+        "emailConfirmed": { "type": "boolean" },
+        "emailAuthFactor": { "type": "boolean" },
+        "active": { "type": "boolean" },
+        "status": {
+          "type": "string",
+          "description": "If active=false, this optional field indicates a possible reason for why the account is not active. If active=false and no status is supplied, then the host makes no claim for why the repository is no longer being hosted.",
+          "knownValues": ["takendown", "suspended", "deactivated"]
+        }
+      }
+    },
+    "deleteAccountResult": {
+      "type": "object",
+      "required": [],
+      "properties": {}
+    }
+  }
+}
