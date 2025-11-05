@@ -1,6 +1,6 @@
 {
   "lexicon": 1,
-  "id": "com.atproto.web5.indexAction",
+  "id": "fans.web5.ckb.indexAction",
   "defs": {
     "main": {
       "type": "procedure",

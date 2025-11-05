@@ -1,6 +1,6 @@
 {
   "lexicon": 1,
-  "id": "com.atproto.web5.uploadBlob",
+  "id": "fans.web5.ckb.uploadBlob",
   "defs": {
     "main": {
       "type": "procedure",

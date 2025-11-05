@@ -13,7 +13,7 @@ import {
 
 const is$typed = _is$typed,
   validate = _validate
-const id = 'com.atproto.web5.uploadBlob'
+const id = 'fans.web5.ckb.uploadBlob'
 
 export type QueryParams = {}
 export type InputSchema = string | Uint8Array | Blob

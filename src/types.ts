@@ -1,4 +1,4 @@
-import { AppBskyActorDefs, ComAtprotoWeb5IndexAction } from './client'
+import { AppBskyActorDefs, FansWeb5CkbIndexAction } from './client'
 import { $Typed } from './client/util'
 import { ModerationPrefs } from './moderation/types'
 
@@ -63,7 +63,7 @@ export interface AtpAgentWeb5LoginOpts {
   signedBytes: string
   /** Ckb address (see: https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0021-ckb-address-format/0021-ckb-address-format.md) */
   ckbAddr?: string
-  index: $Typed<ComAtprotoWeb5IndexAction.CreateSession>
+  index: $Typed<FansWeb5CkbIndexAction.CreateSession>
 }
 
 /**

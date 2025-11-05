@@ -1,6 +1,6 @@
 {
   "lexicon": 1,
-  "id": "com.atproto.web5.preDirectWrites",
+  "id": "fans.web5.ckb.preDirectWrites",
   "defs": {
     "main": {
       "type": "procedure",

@@ -4520,853 +4520,6 @@ export const schemaDict = {
       },
     },
   },
-  ComAtprotoWeb5CreateAccount: {
-    lexicon: 1,
-    id: 'com.atproto.web5.createAccount',
-    defs: {
-      main: {
-        type: 'procedure',
-        description: 'Create an account on web5. Implemented by PDS.',
-        input: {
-          encoding: 'application/json',
-          schema: {
-            type: 'object',
-            required: ['handle', 'signingKey', 'root', 'ckbAddr'],
-            properties: {
-              handle: {
-                type: 'string',
-                format: 'handle',
-                description: 'Requested handle for the account.',
-              },
-              signingKey: {
-                type: 'string',
-                description:
-                  'DID PLC signing key to be included in PLC creation operation.',
-              },
-              inviteCode: {
-                type: 'string',
-              },
-              password: {
-                type: 'string',
-                description:
-                  'Initial account password. May need to meet instance-specific password strength requirements.',
-              },
-              ckbAddr: {
-                type: 'string',
-                description:
-                  'Ckb address (see: https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0021-ckb-address-format/0021-ckb-address-format.md)',
-              },
-              root: {
-                type: 'ref',
-                ref: 'lex:com.atproto.web5.createAccount#signedRoot',
-                description: "The signed bytes on did's mst root",
-              },
-            },
-          },
-        },
-        output: {
-          encoding: 'application/json',
-          schema: {
-            type: 'object',
-            description:
-              'Account login session returned on successful account creation.',
-            required: ['accessJwt', 'refreshJwt', 'handle', 'did'],
-            properties: {
-              accessJwt: {
-                type: 'string',
-              },
-              refreshJwt: {
-                type: 'string',
-              },
-              handle: {
-                type: 'string',
-                format: 'handle',
-              },
-              did: {
-                type: 'string',
-                description: 'The DID of the new account.',
-              },
-              didDoc: {
-                type: 'unknown',
-                description: 'Complete DID document.',
-              },
-            },
-          },
-        },
-        errors: [
-          {
-            name: 'InvalidHandle',
-          },
-          {
-            name: 'HandleNotAvailable',
-          },
-          {
-            name: 'UnsupportedDomain',
-          },
-          {
-            name: 'UnresolvableDid',
-          },
-          {
-            name: 'IncompatibleDidDoc',
-          },
-          {
-            name: 'InvalidSignature',
-          },
-        ],
-      },
-      signedRoot: {
-        type: 'object',
-        required: ['did', 'rev', 'data', 'version', 'signedBytes'],
-        properties: {
-          did: {
-            type: 'string',
-          },
-          rev: {
-            type: 'string',
-            format: 'tid',
-          },
-          data: {
-            type: 'string',
-            format: 'cid',
-          },
-          prev: {
-            type: 'string',
-            format: 'cid',
-          },
-          version: {
-            type: 'integer',
-          },
-          signedBytes: {
-            type: 'string',
-          },
-        },
-      },
-    },
-  },
-  ComAtprotoWeb5DirectWrites: {
-    lexicon: 1,
-    id: 'com.atproto.web5.directWrites',
-    defs: {
-      main: {
-        type: 'procedure',
-        description:
-          'Direct apply a batch transaction of repository creates, updates, and deletes. Requires auth, implemented by PDS.',
-        input: {
-          encoding: 'application/json',
-          schema: {
-            type: 'object',
-            required: ['repo', 'writes', 'signingKey', 'root'],
-            properties: {
-              repo: {
-                type: 'string',
-                format: 'at-identifier',
-                description:
-                  'The handle or DID of the repo (aka, current account).',
-              },
-              validate: {
-                type: 'boolean',
-                description:
-                  "Can be set to 'false' to skip Lexicon schema validation of record data across all operations, 'true' to require it, or leave unset to validate only for known Lexicons.",
-              },
-              writes: {
-                type: 'array',
-                items: {
-                  type: 'union',
-                  refs: [
-                    'lex:com.atproto.web5.directWrites#create',
-                    'lex:com.atproto.web5.directWrites#update',
-                    'lex:com.atproto.web5.directWrites#delete',
-                  ],
-                  closed: true,
-                },
-              },
-              swapCommit: {
-                type: 'string',
-                description:
-                  'If provided, the entire operation will fail if the current repo commit CID does not match this value. Used to prevent conflicting repo mutations.',
-                format: 'cid',
-              },
-              signingKey: {
-                type: 'string',
-                description:
-                  'DID PLC signing key to be included in PLC creation operation.',
-              },
-              ckbAddr: {
-                type: 'string',
-                description:
-                  'Ckb address (see: https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0021-ckb-address-format/0021-ckb-address-format.md)',
-              },
-              root: {
-                type: 'ref',
-                ref: 'lex:com.atproto.web5.directWrites#signedRoot',
-                description: "The signed bytes on did's mst root",
-              },
-            },
-          },
-        },
-        output: {
-          encoding: 'application/json',
-          schema: {
-            type: 'object',
-            required: [],
-            properties: {},
-          },
-        },
-        errors: [
-          {
-            name: 'InvalidSwap',
-            description:
-              "Indicates that the 'swapCommit' parameter did not match current commit.",
-          },
-        ],
-      },
-      create: {
-        type: 'object',
-        description: 'Operation which creates a new record.',
-        required: ['collection', 'value'],
-        properties: {
-          collection: {
-            type: 'string',
-            format: 'nsid',
-          },
-          rkey: {
-            type: 'string',
-            maxLength: 512,
-            format: 'record-key',
-            description:
-              'NOTE: maxLength is redundant with record-key format. Keeping it temporarily to ensure backwards compatibility.',
-          },
-          value: {
-            type: 'unknown',
-          },
-        },
-      },
-      update: {
-        type: 'object',
-        description: 'Operation which updates an existing record.',
-        required: ['collection', 'rkey', 'value'],
-        properties: {
-          collection: {
-            type: 'string',
-            format: 'nsid',
-          },
-          rkey: {
-            type: 'string',
-            format: 'record-key',
-          },
-          value: {
-            type: 'unknown',
-          },
-        },
-      },
-      delete: {
-        type: 'object',
-        description: 'Operation which deletes an existing record.',
-        required: ['collection', 'rkey'],
-        properties: {
-          collection: {
-            type: 'string',
-            format: 'nsid',
-          },
-          rkey: {
-            type: 'string',
-            format: 'record-key',
-          },
-        },
-      },
-      signedRoot: {
-        type: 'object',
-        required: ['did', 'rev', 'data', 'version', 'signedBytes'],
-        properties: {
-          did: {
-            type: 'string',
-          },
-          rev: {
-            type: 'string',
-            format: 'tid',
-          },
-          data: {
-            type: 'string',
-            format: 'cid',
-          },
-          prev: {
-            type: 'string',
-            format: 'cid',
-          },
-          version: {
-            type: 'integer',
-          },
-          signedBytes: {
-            type: 'string',
-          },
-        },
-      },
-    },
-  },
-  ComAtprotoWeb5IndexAction: {
-    lexicon: 1,
-    id: 'com.atproto.web5.indexAction',
-    defs: {
-      main: {
-        type: 'procedure',
-        description: 'Create an index action.',
-        input: {
-          encoding: 'application/json',
-          schema: {
-            type: 'object',
-            required: ['did', 'signingKey', 'message', 'signedBytes', 'index'],
-            properties: {
-              did: {
-                type: 'string',
-                description:
-                  'Identifier supported by the server for the authenticating user.',
-              },
-              signingKey: {
-                type: 'string',
-                description:
-                  'DID PLC signing key to be included in PLC creation operation.',
-              },
-              message: {
-                type: 'string',
-              },
-              signedBytes: {
-                type: 'string',
-              },
-              ckbAddr: {
-                type: 'string',
-                description:
-                  'Ckb address (see: https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0021-ckb-address-format/0021-ckb-address-format.md)',
-              },
-              index: {
-                type: 'union',
-                refs: [
-                  'lex:com.atproto.web5.indexAction#createSession',
-                  'lex:com.atproto.web5.indexAction#deleteAccount',
-                ],
-              },
-            },
-          },
-        },
-        output: {
-          encoding: 'application/json',
-          schema: {
-            type: 'object',
-            required: ['result'],
-            properties: {
-              result: {
-                type: 'union',
-                refs: [
-                  'lex:com.atproto.web5.indexAction#createSessionResult',
-                  'lex:com.atproto.web5.indexAction#deleteAccountResult',
-                ],
-              },
-            },
-          },
-        },
-        errors: [
-          {
-            name: 'AccountTakedown',
-          },
-        ],
-      },
-      createSession: {
-        type: 'object',
-        required: [],
-        properties: {},
-      },
-      deleteAccount: {
-        type: 'object',
-        required: [],
-        properties: {},
-      },
-      createSessionResult: {
-        type: 'object',
-        required: ['accessJwt', 'refreshJwt', 'handle', 'did'],
-        properties: {
-          accessJwt: {
-            type: 'string',
-          },
-          refreshJwt: {
-            type: 'string',
-          },
-          handle: {
-            type: 'string',
-            format: 'handle',
-          },
-          did: {
-            type: 'string',
-          },
-          didDoc: {
-            type: 'unknown',
-          },
-          email: {
-            type: 'string',
-          },
-          emailConfirmed: {
-            type: 'boolean',
-          },
-          emailAuthFactor: {
-            type: 'boolean',
-          },
-          active: {
-            type: 'boolean',
-          },
-          status: {
-            type: 'string',
-            description:
-              'If active=false, this optional field indicates a possible reason for why the account is not active. If active=false and no status is supplied, then the host makes no claim for why the repository is no longer being hosted.',
-            knownValues: ['takendown', 'suspended', 'deactivated'],
-          },
-        },
-      },
-      deleteAccountResult: {
-        type: 'object',
-        required: [],
-        properties: {},
-      },
-    },
-  },
-  ComAtprotoWeb5IndexQuery: {
-    lexicon: 1,
-    id: 'com.atproto.web5.indexQuery',
-    defs: {
-      main: {
-        type: 'procedure',
-        description: 'Create an index action.',
-        input: {
-          encoding: 'application/json',
-          schema: {
-            type: 'object',
-            required: [],
-            properties: {
-              index: {
-                type: 'union',
-                refs: [
-                  'lex:com.atproto.web5.indexQuery#firstItem',
-                  'lex:com.atproto.web5.indexQuery#secondItem',
-                  'lex:com.atproto.web5.indexQuery#thirdItem',
-                  'lex:com.atproto.web5.indexQuery#fourthItem',
-                ],
-              },
-            },
-          },
-        },
-        output: {
-          encoding: 'application/json',
-          schema: {
-            type: 'object',
-            required: ['result'],
-            properties: {
-              result: {
-                type: 'union',
-                refs: [
-                  'lex:com.atproto.web5.indexQuery#firstItemResult',
-                  'lex:com.atproto.web5.indexQuery#secondItemResult',
-                  'lex:com.atproto.web5.indexQuery#thirdItemResult',
-                  'lex:com.atproto.web5.indexQuery#fourthItemResult',
-                ],
-              },
-            },
-          },
-        },
-        errors: [
-          {
-            name: 'AccountTakedown',
-          },
-        ],
-      },
-      firstItem: {
-        type: 'object',
-        required: [],
-        properties: {},
-      },
-      secondItem: {
-        type: 'object',
-        required: [],
-        properties: {},
-      },
-      thirdItem: {
-        type: 'object',
-        required: ['did'],
-        properties: {
-          did: {
-            type: 'string',
-            description:
-              'Identifier supported by the server for the authenticating user.',
-          },
-        },
-      },
-      fourthItem: {
-        type: 'object',
-        required: ['did'],
-        properties: {
-          did: {
-            type: 'string',
-            description:
-              'Identifier supported by the server for the authenticating user.',
-          },
-        },
-      },
-      firstItemResult: {
-        type: 'object',
-        required: ['result'],
-        properties: {
-          result: {
-            type: 'integer',
-          },
-        },
-      },
-      secondItemResult: {
-        type: 'object',
-        required: ['result'],
-        properties: {
-          result: {
-            type: 'integer',
-          },
-        },
-      },
-      thirdItemResult: {
-        type: 'object',
-        required: ['result'],
-        properties: {
-          result: {
-            type: 'integer',
-          },
-        },
-      },
-      fourthItemResult: {
-        type: 'object',
-        required: ['result'],
-        properties: {
-          result: {
-            type: 'string',
-          },
-        },
-      },
-    },
-  },
-  ComAtprotoWeb5PreCreateAccount: {
-    lexicon: 1,
-    id: 'com.atproto.web5.preCreateAccount',
-    defs: {
-      main: {
-        type: 'procedure',
-        description: 'PreCreate an account on web5. Implemented by PDS.',
-        input: {
-          encoding: 'application/json',
-          schema: {
-            type: 'object',
-            required: ['handle', 'signingKey', 'did'],
-            properties: {
-              handle: {
-                type: 'string',
-                format: 'handle',
-                description: 'Requested handle for the account.',
-              },
-              did: {
-                type: 'string',
-                description:
-                  'Pre-existing atproto DID, being imported to a new account.',
-              },
-              signingKey: {
-                type: 'string',
-                description:
-                  'DID PLC signing key to be included in PLC creation operation.',
-              },
-              inviteCode: {
-                type: 'string',
-              },
-            },
-          },
-        },
-        output: {
-          encoding: 'application/json',
-          schema: {
-            type: 'object',
-            required: ['did', 'rev', 'data', 'version', 'unSignBytes'],
-            properties: {
-              did: {
-                type: 'string',
-              },
-              rev: {
-                type: 'string',
-                format: 'tid',
-              },
-              data: {
-                type: 'string',
-                format: 'cid',
-              },
-              prev: {
-                type: 'string',
-                format: 'cid',
-              },
-              version: {
-                type: 'integer',
-              },
-              unSignBytes: {
-                type: 'string',
-              },
-            },
-          },
-        },
-        errors: [
-          {
-            name: 'InvalidHandle',
-          },
-          {
-            name: 'HandleNotAvailable',
-          },
-          {
-            name: 'UnsupportedDomain',
-          },
-          {
-            name: 'UnresolvableDid',
-          },
-          {
-            name: 'IncompatibleDidDoc',
-          },
-        ],
-      },
-    },
-  },
-  ComAtprotoWeb5PreDirectWrites: {
-    lexicon: 1,
-    id: 'com.atproto.web5.preDirectWrites',
-    defs: {
-      main: {
-        type: 'procedure',
-        description:
-          'Pre apply a batch transaction of repository creates, updates, and deletes. Requires auth, implemented by PDS.',
-        input: {
-          encoding: 'application/json',
-          schema: {
-            type: 'object',
-            required: ['repo', 'writes'],
-            properties: {
-              repo: {
-                type: 'string',
-                format: 'at-identifier',
-                description:
-                  'The handle or DID of the repo (aka, current account).',
-              },
-              validate: {
-                type: 'boolean',
-                description:
-                  "Can be set to 'false' to skip Lexicon schema validation of record data across all operations, 'true' to require it, or leave unset to validate only for known Lexicons.",
-              },
-              writes: {
-                type: 'array',
-                items: {
-                  type: 'union',
-                  refs: [
-                    'lex:com.atproto.web5.preDirectWrites#create',
-                    'lex:com.atproto.web5.preDirectWrites#update',
-                    'lex:com.atproto.web5.preDirectWrites#delete',
-                  ],
-                  closed: true,
-                },
-              },
-              swapCommit: {
-                type: 'string',
-                description:
-                  'If provided, the entire operation will fail if the current repo commit CID does not match this value. Used to prevent conflicting repo mutations.',
-                format: 'cid',
-              },
-            },
-          },
-        },
-        output: {
-          encoding: 'application/json',
-          schema: {
-            type: 'object',
-            required: ['did', 'rev', 'data', 'version', 'unSignBytes'],
-            properties: {
-              did: {
-                type: 'string',
-              },
-              rev: {
-                type: 'string',
-                format: 'tid',
-              },
-              data: {
-                type: 'string',
-                format: 'cid',
-              },
-              prev: {
-                type: 'string',
-                format: 'cid',
-              },
-              version: {
-                type: 'integer',
-              },
-              unSignBytes: {
-                type: 'string',
-              },
-            },
-          },
-        },
-        errors: [
-          {
-            name: 'InvalidSwap',
-            description:
-              "Indicates that the 'swapCommit' parameter did not match current commit.",
-          },
-        ],
-      },
-      create: {
-        type: 'object',
-        description: 'Operation which creates a new record.',
-        required: ['collection', 'value'],
-        properties: {
-          collection: {
-            type: 'string',
-            format: 'nsid',
-          },
-          rkey: {
-            type: 'string',
-            maxLength: 512,
-            format: 'record-key',
-            description:
-              'NOTE: maxLength is redundant with record-key format. Keeping it temporarily to ensure backwards compatibility.',
-          },
-          value: {
-            type: 'unknown',
-          },
-        },
-      },
-      update: {
-        type: 'object',
-        description: 'Operation which updates an existing record.',
-        required: ['collection', 'rkey', 'value'],
-        properties: {
-          collection: {
-            type: 'string',
-            format: 'nsid',
-          },
-          rkey: {
-            type: 'string',
-            format: 'record-key',
-          },
-          value: {
-            type: 'unknown',
-          },
-        },
-      },
-      delete: {
-        type: 'object',
-        description: 'Operation which deletes an existing record.',
-        required: ['collection', 'rkey'],
-        properties: {
-          collection: {
-            type: 'string',
-            format: 'nsid',
-          },
-          rkey: {
-            type: 'string',
-            format: 'record-key',
-          },
-        },
-      },
-    },
-  },
-  ComAtprotoWeb5PreIndexAction: {
-    lexicon: 1,
-    id: 'com.atproto.web5.preIndexAction',
-    defs: {
-      main: {
-        type: 'procedure',
-        description: 'Pre Create an index action.',
-        input: {
-          encoding: 'application/json',
-          schema: {
-            type: 'object',
-            required: ['did', 'index'],
-            properties: {
-              did: {
-                type: 'string',
-                description:
-                  'Identifier supported by the server for the authenticating user.',
-              },
-              ckbAddr: {
-                type: 'string',
-                description:
-                  'Ckb address (see: https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0021-ckb-address-format/0021-ckb-address-format.md)',
-              },
-              index: {
-                type: 'union',
-                refs: [
-                  'lex:com.atproto.web5.preIndexAction#createSession',
-                  'lex:com.atproto.web5.preIndexAction#deleteAccount',
-                ],
-              },
-            },
-          },
-        },
-        output: {
-          encoding: 'application/json',
-          schema: {
-            type: 'object',
-            required: ['did', 'handle', 'message'],
-            properties: {
-              did: {
-                type: 'string',
-              },
-              handle: {
-                type: 'string',
-              },
-              message: {
-                type: 'string',
-              },
-            },
-          },
-        },
-        errors: [
-          {
-            name: 'AccountTakedown',
-          },
-        ],
-      },
-      createSession: {
-        type: 'object',
-        required: [],
-        properties: {},
-      },
-      deleteAccount: {
-        type: 'object',
-        required: [],
-        properties: {},
-      },
-    },
-  },
-  ComAtprotoWeb5UploadBlob: {
-    lexicon: 1,
-    id: 'com.atproto.web5.uploadBlob',
-    defs: {
-      main: {
-        type: 'procedure',
-        description:
-          'Upload a new blob, to be referenced from a repository record. The blob will be deleted if it is not referenced within a time window (eg, minutes). Blob restrictions (mimetype, size, etc) are enforced when the reference is created. Requires auth, implemented by PDS.',
-        input: {
-          encoding: '*/*',
-        },
-        output: {
-          encoding: 'application/json',
-          schema: {
-            type: 'object',
-            required: ['blob'],
-            properties: {
-              blobServer: {
-                type: 'string',
-              },
-              blob: {
-                type: 'blob',
-              },
-            },
-          },
-        },
-      },
-    },
-  },
   AppBskyActorDefs: {
     lexicon: 1,
     id: 'app.bsky.actor.defs',
@@ -17082,6 +16235,853 @@ export const schemaDict = {
       },
     },
   },
+  FansWeb5CkbCreateAccount: {
+    lexicon: 1,
+    id: 'fans.web5.ckb.createAccount',
+    defs: {
+      main: {
+        type: 'procedure',
+        description: 'Create an account on web5. Implemented by PDS.',
+        input: {
+          encoding: 'application/json',
+          schema: {
+            type: 'object',
+            required: ['handle', 'signingKey', 'root', 'ckbAddr'],
+            properties: {
+              handle: {
+                type: 'string',
+                format: 'handle',
+                description: 'Requested handle for the account.',
+              },
+              signingKey: {
+                type: 'string',
+                description:
+                  'DID PLC signing key to be included in PLC creation operation.',
+              },
+              inviteCode: {
+                type: 'string',
+              },
+              password: {
+                type: 'string',
+                description:
+                  'Initial account password. May need to meet instance-specific password strength requirements.',
+              },
+              ckbAddr: {
+                type: 'string',
+                description:
+                  'Ckb address (see: https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0021-ckb-address-format/0021-ckb-address-format.md)',
+              },
+              root: {
+                type: 'ref',
+                ref: 'lex:fans.web5.ckb.createAccount#signedRoot',
+                description: "The signed bytes on did's mst root",
+              },
+            },
+          },
+        },
+        output: {
+          encoding: 'application/json',
+          schema: {
+            type: 'object',
+            description:
+              'Account login session returned on successful account creation.',
+            required: ['accessJwt', 'refreshJwt', 'handle', 'did'],
+            properties: {
+              accessJwt: {
+                type: 'string',
+              },
+              refreshJwt: {
+                type: 'string',
+              },
+              handle: {
+                type: 'string',
+                format: 'handle',
+              },
+              did: {
+                type: 'string',
+                description: 'The DID of the new account.',
+              },
+              didDoc: {
+                type: 'unknown',
+                description: 'Complete DID document.',
+              },
+            },
+          },
+        },
+        errors: [
+          {
+            name: 'InvalidHandle',
+          },
+          {
+            name: 'HandleNotAvailable',
+          },
+          {
+            name: 'UnsupportedDomain',
+          },
+          {
+            name: 'UnresolvableDid',
+          },
+          {
+            name: 'IncompatibleDidDoc',
+          },
+          {
+            name: 'InvalidSignature',
+          },
+        ],
+      },
+      signedRoot: {
+        type: 'object',
+        required: ['did', 'rev', 'data', 'version', 'signedBytes'],
+        properties: {
+          did: {
+            type: 'string',
+          },
+          rev: {
+            type: 'string',
+            format: 'tid',
+          },
+          data: {
+            type: 'string',
+            format: 'cid',
+          },
+          prev: {
+            type: 'string',
+            format: 'cid',
+          },
+          version: {
+            type: 'integer',
+          },
+          signedBytes: {
+            type: 'string',
+          },
+        },
+      },
+    },
+  },
+  FansWeb5CkbDirectWrites: {
+    lexicon: 1,
+    id: 'fans.web5.ckb.directWrites',
+    defs: {
+      main: {
+        type: 'procedure',
+        description:
+          'Direct apply a batch transaction of repository creates, updates, and deletes. Requires auth, implemented by PDS.',
+        input: {
+          encoding: 'application/json',
+          schema: {
+            type: 'object',
+            required: ['repo', 'writes', 'signingKey', 'root'],
+            properties: {
+              repo: {
+                type: 'string',
+                format: 'at-identifier',
+                description:
+                  'The handle or DID of the repo (aka, current account).',
+              },
+              validate: {
+                type: 'boolean',
+                description:
+                  "Can be set to 'false' to skip Lexicon schema validation of record data across all operations, 'true' to require it, or leave unset to validate only for known Lexicons.",
+              },
+              writes: {
+                type: 'array',
+                items: {
+                  type: 'union',
+                  refs: [
+                    'lex:fans.web5.ckb.directWrites#create',
+                    'lex:fans.web5.ckb.directWrites#update',
+                    'lex:fans.web5.ckb.directWrites#delete',
+                  ],
+                  closed: true,
+                },
+              },
+              swapCommit: {
+                type: 'string',
+                description:
+                  'If provided, the entire operation will fail if the current repo commit CID does not match this value. Used to prevent conflicting repo mutations.',
+                format: 'cid',
+              },
+              signingKey: {
+                type: 'string',
+                description:
+                  'DID PLC signing key to be included in PLC creation operation.',
+              },
+              ckbAddr: {
+                type: 'string',
+                description:
+                  'Ckb address (see: https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0021-ckb-address-format/0021-ckb-address-format.md)',
+              },
+              root: {
+                type: 'ref',
+                ref: 'lex:fans.web5.ckb.directWrites#signedRoot',
+                description: "The signed bytes on did's mst root",
+              },
+            },
+          },
+        },
+        output: {
+          encoding: 'application/json',
+          schema: {
+            type: 'object',
+            required: [],
+            properties: {},
+          },
+        },
+        errors: [
+          {
+            name: 'InvalidSwap',
+            description:
+              "Indicates that the 'swapCommit' parameter did not match current commit.",
+          },
+        ],
+      },
+      create: {
+        type: 'object',
+        description: 'Operation which creates a new record.',
+        required: ['collection', 'value'],
+        properties: {
+          collection: {
+            type: 'string',
+            format: 'nsid',
+          },
+          rkey: {
+            type: 'string',
+            maxLength: 512,
+            format: 'record-key',
+            description:
+              'NOTE: maxLength is redundant with record-key format. Keeping it temporarily to ensure backwards compatibility.',
+          },
+          value: {
+            type: 'unknown',
+          },
+        },
+      },
+      update: {
+        type: 'object',
+        description: 'Operation which updates an existing record.',
+        required: ['collection', 'rkey', 'value'],
+        properties: {
+          collection: {
+            type: 'string',
+            format: 'nsid',
+          },
+          rkey: {
+            type: 'string',
+            format: 'record-key',
+          },
+          value: {
+            type: 'unknown',
+          },
+        },
+      },
+      delete: {
+        type: 'object',
+        description: 'Operation which deletes an existing record.',
+        required: ['collection', 'rkey'],
+        properties: {
+          collection: {
+            type: 'string',
+            format: 'nsid',
+          },
+          rkey: {
+            type: 'string',
+            format: 'record-key',
+          },
+        },
+      },
+      signedRoot: {
+        type: 'object',
+        required: ['did', 'rev', 'data', 'version', 'signedBytes'],
+        properties: {
+          did: {
+            type: 'string',
+          },
+          rev: {
+            type: 'string',
+            format: 'tid',
+          },
+          data: {
+            type: 'string',
+            format: 'cid',
+          },
+          prev: {
+            type: 'string',
+            format: 'cid',
+          },
+          version: {
+            type: 'integer',
+          },
+          signedBytes: {
+            type: 'string',
+          },
+        },
+      },
+    },
+  },
+  FansWeb5CkbIndexAction: {
+    lexicon: 1,
+    id: 'fans.web5.ckb.indexAction',
+    defs: {
+      main: {
+        type: 'procedure',
+        description: 'Create an index action.',
+        input: {
+          encoding: 'application/json',
+          schema: {
+            type: 'object',
+            required: ['did', 'signingKey', 'message', 'signedBytes', 'index'],
+            properties: {
+              did: {
+                type: 'string',
+                description:
+                  'Identifier supported by the server for the authenticating user.',
+              },
+              signingKey: {
+                type: 'string',
+                description:
+                  'DID PLC signing key to be included in PLC creation operation.',
+              },
+              message: {
+                type: 'string',
+              },
+              signedBytes: {
+                type: 'string',
+              },
+              ckbAddr: {
+                type: 'string',
+                description:
+                  'Ckb address (see: https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0021-ckb-address-format/0021-ckb-address-format.md)',
+              },
+              index: {
+                type: 'union',
+                refs: [
+                  'lex:fans.web5.ckb.indexAction#createSession',
+                  'lex:fans.web5.ckb.indexAction#deleteAccount',
+                ],
+              },
+            },
+          },
+        },
+        output: {
+          encoding: 'application/json',
+          schema: {
+            type: 'object',
+            required: ['result'],
+            properties: {
+              result: {
+                type: 'union',
+                refs: [
+                  'lex:fans.web5.ckb.indexAction#createSessionResult',
+                  'lex:fans.web5.ckb.indexAction#deleteAccountResult',
+                ],
+              },
+            },
+          },
+        },
+        errors: [
+          {
+            name: 'AccountTakedown',
+          },
+        ],
+      },
+      createSession: {
+        type: 'object',
+        required: [],
+        properties: {},
+      },
+      deleteAccount: {
+        type: 'object',
+        required: [],
+        properties: {},
+      },
+      createSessionResult: {
+        type: 'object',
+        required: ['accessJwt', 'refreshJwt', 'handle', 'did'],
+        properties: {
+          accessJwt: {
+            type: 'string',
+          },
+          refreshJwt: {
+            type: 'string',
+          },
+          handle: {
+            type: 'string',
+            format: 'handle',
+          },
+          did: {
+            type: 'string',
+          },
+          didDoc: {
+            type: 'unknown',
+          },
+          email: {
+            type: 'string',
+          },
+          emailConfirmed: {
+            type: 'boolean',
+          },
+          emailAuthFactor: {
+            type: 'boolean',
+          },
+          active: {
+            type: 'boolean',
+          },
+          status: {
+            type: 'string',
+            description:
+              'If active=false, this optional field indicates a possible reason for why the account is not active. If active=false and no status is supplied, then the host makes no claim for why the repository is no longer being hosted.',
+            knownValues: ['takendown', 'suspended', 'deactivated'],
+          },
+        },
+      },
+      deleteAccountResult: {
+        type: 'object',
+        required: [],
+        properties: {},
+      },
+    },
+  },
+  FansWeb5CkbIndexQuery: {
+    lexicon: 1,
+    id: 'fans.web5.ckb.indexQuery',
+    defs: {
+      main: {
+        type: 'procedure',
+        description: 'Create an index action.',
+        input: {
+          encoding: 'application/json',
+          schema: {
+            type: 'object',
+            required: [],
+            properties: {
+              index: {
+                type: 'union',
+                refs: [
+                  'lex:fans.web5.ckb.indexQuery#firstItem',
+                  'lex:fans.web5.ckb.indexQuery#secondItem',
+                  'lex:fans.web5.ckb.indexQuery#thirdItem',
+                  'lex:fans.web5.ckb.indexQuery#fourthItem',
+                ],
+              },
+            },
+          },
+        },
+        output: {
+          encoding: 'application/json',
+          schema: {
+            type: 'object',
+            required: ['result'],
+            properties: {
+              result: {
+                type: 'union',
+                refs: [
+                  'lex:fans.web5.ckb.indexQuery#firstItemResult',
+                  'lex:fans.web5.ckb.indexQuery#secondItemResult',
+                  'lex:fans.web5.ckb.indexQuery#thirdItemResult',
+                  'lex:fans.web5.ckb.indexQuery#fourthItemResult',
+                ],
+              },
+            },
+          },
+        },
+        errors: [
+          {
+            name: 'AccountTakedown',
+          },
+        ],
+      },
+      firstItem: {
+        type: 'object',
+        required: [],
+        properties: {},
+      },
+      secondItem: {
+        type: 'object',
+        required: [],
+        properties: {},
+      },
+      thirdItem: {
+        type: 'object',
+        required: ['did'],
+        properties: {
+          did: {
+            type: 'string',
+            description:
+              'Identifier supported by the server for the authenticating user.',
+          },
+        },
+      },
+      fourthItem: {
+        type: 'object',
+        required: ['did'],
+        properties: {
+          did: {
+            type: 'string',
+            description:
+              'Identifier supported by the server for the authenticating user.',
+          },
+        },
+      },
+      firstItemResult: {
+        type: 'object',
+        required: ['result'],
+        properties: {
+          result: {
+            type: 'integer',
+          },
+        },
+      },
+      secondItemResult: {
+        type: 'object',
+        required: ['result'],
+        properties: {
+          result: {
+            type: 'integer',
+          },
+        },
+      },
+      thirdItemResult: {
+        type: 'object',
+        required: ['result'],
+        properties: {
+          result: {
+            type: 'integer',
+          },
+        },
+      },
+      fourthItemResult: {
+        type: 'object',
+        required: ['result'],
+        properties: {
+          result: {
+            type: 'string',
+          },
+        },
+      },
+    },
+  },
+  FansWeb5CkbPreCreateAccount: {
+    lexicon: 1,
+    id: 'fans.web5.ckb.preCreateAccount',
+    defs: {
+      main: {
+        type: 'procedure',
+        description: 'PreCreate an account on web5. Implemented by PDS.',
+        input: {
+          encoding: 'application/json',
+          schema: {
+            type: 'object',
+            required: ['handle', 'signingKey', 'did'],
+            properties: {
+              handle: {
+                type: 'string',
+                format: 'handle',
+                description: 'Requested handle for the account.',
+              },
+              did: {
+                type: 'string',
+                description:
+                  'Pre-existing atproto DID, being imported to a new account.',
+              },
+              signingKey: {
+                type: 'string',
+                description:
+                  'DID PLC signing key to be included in PLC creation operation.',
+              },
+              inviteCode: {
+                type: 'string',
+              },
+            },
+          },
+        },
+        output: {
+          encoding: 'application/json',
+          schema: {
+            type: 'object',
+            required: ['did', 'rev', 'data', 'version', 'unSignBytes'],
+            properties: {
+              did: {
+                type: 'string',
+              },
+              rev: {
+                type: 'string',
+                format: 'tid',
+              },
+              data: {
+                type: 'string',
+                format: 'cid',
+              },
+              prev: {
+                type: 'string',
+                format: 'cid',
+              },
+              version: {
+                type: 'integer',
+              },
+              unSignBytes: {
+                type: 'string',
+              },
+            },
+          },
+        },
+        errors: [
+          {
+            name: 'InvalidHandle',
+          },
+          {
+            name: 'HandleNotAvailable',
+          },
+          {
+            name: 'UnsupportedDomain',
+          },
+          {
+            name: 'UnresolvableDid',
+          },
+          {
+            name: 'IncompatibleDidDoc',
+          },
+        ],
+      },
+    },
+  },
+  FansWeb5CkbPreDirectWrites: {
+    lexicon: 1,
+    id: 'fans.web5.ckb.preDirectWrites',
+    defs: {
+      main: {
+        type: 'procedure',
+        description:
+          'Pre apply a batch transaction of repository creates, updates, and deletes. Requires auth, implemented by PDS.',
+        input: {
+          encoding: 'application/json',
+          schema: {
+            type: 'object',
+            required: ['repo', 'writes'],
+            properties: {
+              repo: {
+                type: 'string',
+                format: 'at-identifier',
+                description:
+                  'The handle or DID of the repo (aka, current account).',
+              },
+              validate: {
+                type: 'boolean',
+                description:
+                  "Can be set to 'false' to skip Lexicon schema validation of record data across all operations, 'true' to require it, or leave unset to validate only for known Lexicons.",
+              },
+              writes: {
+                type: 'array',
+                items: {
+                  type: 'union',
+                  refs: [
+                    'lex:fans.web5.ckb.preDirectWrites#create',
+                    'lex:fans.web5.ckb.preDirectWrites#update',
+                    'lex:fans.web5.ckb.preDirectWrites#delete',
+                  ],
+                  closed: true,
+                },
+              },
+              swapCommit: {
+                type: 'string',
+                description:
+                  'If provided, the entire operation will fail if the current repo commit CID does not match this value. Used to prevent conflicting repo mutations.',
+                format: 'cid',
+              },
+            },
+          },
+        },
+        output: {
+          encoding: 'application/json',
+          schema: {
+            type: 'object',
+            required: ['did', 'rev', 'data', 'version', 'unSignBytes'],
+            properties: {
+              did: {
+                type: 'string',
+              },
+              rev: {
+                type: 'string',
+                format: 'tid',
+              },
+              data: {
+                type: 'string',
+                format: 'cid',
+              },
+              prev: {
+                type: 'string',
+                format: 'cid',
+              },
+              version: {
+                type: 'integer',
+              },
+              unSignBytes: {
+                type: 'string',
+              },
+            },
+          },
+        },
+        errors: [
+          {
+            name: 'InvalidSwap',
+            description:
+              "Indicates that the 'swapCommit' parameter did not match current commit.",
+          },
+        ],
+      },
+      create: {
+        type: 'object',
+        description: 'Operation which creates a new record.',
+        required: ['collection', 'value'],
+        properties: {
+          collection: {
+            type: 'string',
+            format: 'nsid',
+          },
+          rkey: {
+            type: 'string',
+            maxLength: 512,
+            format: 'record-key',
+            description:
+              'NOTE: maxLength is redundant with record-key format. Keeping it temporarily to ensure backwards compatibility.',
+          },
+          value: {
+            type: 'unknown',
+          },
+        },
+      },
+      update: {
+        type: 'object',
+        description: 'Operation which updates an existing record.',
+        required: ['collection', 'rkey', 'value'],
+        properties: {
+          collection: {
+            type: 'string',
+            format: 'nsid',
+          },
+          rkey: {
+            type: 'string',
+            format: 'record-key',
+          },
+          value: {
+            type: 'unknown',
+          },
+        },
+      },
+      delete: {
+        type: 'object',
+        description: 'Operation which deletes an existing record.',
+        required: ['collection', 'rkey'],
+        properties: {
+          collection: {
+            type: 'string',
+            format: 'nsid',
+          },
+          rkey: {
+            type: 'string',
+            format: 'record-key',
+          },
+        },
+      },
+    },
+  },
+  FansWeb5CkbPreIndexAction: {
+    lexicon: 1,
+    id: 'fans.web5.ckb.preIndexAction',
+    defs: {
+      main: {
+        type: 'procedure',
+        description: 'Pre Create an index action.',
+        input: {
+          encoding: 'application/json',
+          schema: {
+            type: 'object',
+            required: ['did', 'index'],
+            properties: {
+              did: {
+                type: 'string',
+                description:
+                  'Identifier supported by the server for the authenticating user.',
+              },
+              ckbAddr: {
+                type: 'string',
+                description:
+                  'Ckb address (see: https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0021-ckb-address-format/0021-ckb-address-format.md)',
+              },
+              index: {
+                type: 'union',
+                refs: [
+                  'lex:fans.web5.ckb.preIndexAction#createSession',
+                  'lex:fans.web5.ckb.preIndexAction#deleteAccount',
+                ],
+              },
+            },
+          },
+        },
+        output: {
+          encoding: 'application/json',
+          schema: {
+            type: 'object',
+            required: ['did', 'handle', 'message'],
+            properties: {
+              did: {
+                type: 'string',
+              },
+              handle: {
+                type: 'string',
+              },
+              message: {
+                type: 'string',
+              },
+            },
+          },
+        },
+        errors: [
+          {
+            name: 'AccountTakedown',
+          },
+        ],
+      },
+      createSession: {
+        type: 'object',
+        required: [],
+        properties: {},
+      },
+      deleteAccount: {
+        type: 'object',
+        required: [],
+        properties: {},
+      },
+    },
+  },
+  FansWeb5CkbUploadBlob: {
+    lexicon: 1,
+    id: 'fans.web5.ckb.uploadBlob',
+    defs: {
+      main: {
+        type: 'procedure',
+        description:
+          'Upload a new blob, to be referenced from a repository record. The blob will be deleted if it is not referenced within a time window (eg, minutes). Blob restrictions (mimetype, size, etc) are enforced when the reference is created. Requires auth, implemented by PDS.',
+        input: {
+          encoding: '*/*',
+        },
+        output: {
+          encoding: 'application/json',
+          schema: {
+            type: 'object',
+            required: ['blob'],
+            properties: {
+              blobServer: {
+                type: 'string',
+              },
+              blob: {
+                type: 'blob',
+              },
+            },
+          },
+        },
+      },
+    },
+  },
 } as const satisfies Record<string, LexiconDoc>
 export const schemas = Object.values(schemaDict) satisfies LexiconDoc[]
 export const lexicons: Lexicons = new Lexicons(schemas)
@@ -17217,14 +17217,6 @@ export const ids = {
   ComAtprotoTempFetchLabels: 'com.atproto.temp.fetchLabels',
   ComAtprotoTempRequestPhoneVerification:
     'com.atproto.temp.requestPhoneVerification',
-  ComAtprotoWeb5CreateAccount: 'com.atproto.web5.createAccount',
-  ComAtprotoWeb5DirectWrites: 'com.atproto.web5.directWrites',
-  ComAtprotoWeb5IndexAction: 'com.atproto.web5.indexAction',
-  ComAtprotoWeb5IndexQuery: 'com.atproto.web5.indexQuery',
-  ComAtprotoWeb5PreCreateAccount: 'com.atproto.web5.preCreateAccount',
-  ComAtprotoWeb5PreDirectWrites: 'com.atproto.web5.preDirectWrites',
-  ComAtprotoWeb5PreIndexAction: 'com.atproto.web5.preIndexAction',
-  ComAtprotoWeb5UploadBlob: 'com.atproto.web5.uploadBlob',
   AppBskyActorDefs: 'app.bsky.actor.defs',
   AppBskyActorGetPreferences: 'app.bsky.actor.getPreferences',
   AppBskyActorGetProfile: 'app.bsky.actor.getProfile',
@@ -17416,4 +17408,12 @@ export const ids = {
     'tools.ozone.verification.listVerifications',
   ToolsOzoneVerificationRevokeVerifications:
     'tools.ozone.verification.revokeVerifications',
+  FansWeb5CkbCreateAccount: 'fans.web5.ckb.createAccount',
+  FansWeb5CkbDirectWrites: 'fans.web5.ckb.directWrites',
+  FansWeb5CkbIndexAction: 'fans.web5.ckb.indexAction',
+  FansWeb5CkbIndexQuery: 'fans.web5.ckb.indexQuery',
+  FansWeb5CkbPreCreateAccount: 'fans.web5.ckb.preCreateAccount',
+  FansWeb5CkbPreDirectWrites: 'fans.web5.ckb.preDirectWrites',
+  FansWeb5CkbPreIndexAction: 'fans.web5.ckb.preIndexAction',
+  FansWeb5CkbUploadBlob: 'fans.web5.ckb.uploadBlob',
 } as const

@@ -12,10 +12,10 @@ import {
   ComAtprotoServerCreateAccount,
   ComAtprotoServerCreateSession,
   ComAtprotoServerGetSession,
-  ComAtprotoWeb5CreateAccount,
+  FansWeb5CkbCreateAccount,
   ComAtprotoServerNS,
-  ComAtprotoWeb5NS,
-  ComAtprotoWeb5IndexAction,
+  FansWeb5CkbNS,
+  FansWeb5CkbIndexAction,
 } from './client'
 import { schemas } from './client/lexicons'
 import { SessionManager } from './session-manager'
@@ -143,9 +143,9 @@ export class AtpAgent extends Agent {
   }
 
   async web5CreateAccount(
-    data: ComAtprotoWeb5CreateAccount.InputSchema,
-    opts?: ComAtprotoWeb5CreateAccount.CallOptions,
-  ): Promise<ComAtprotoWeb5CreateAccount.Response> {
+    data: FansWeb5CkbCreateAccount.InputSchema,
+    opts?: FansWeb5CkbCreateAccount.CallOptions,
+  ): Promise<FansWeb5CkbCreateAccount.Response> {
     return this.sessionManager.web5CreateAccount(data, opts)
   }
 
@@ -157,7 +157,7 @@ export class AtpAgent extends Agent {
 
   async web5Login(
     opts: AtpAgentWeb5LoginOpts,
-  ): Promise<ComAtprotoWeb5IndexAction.Response> {
+  ): Promise<FansWeb5CkbIndexAction.Response> {
     return this.sessionManager.web5Login(opts)
   }
 
@@ -196,7 +196,7 @@ export class CredentialSession implements SessionManager {
     }, schemas),
   )
 
-  protected web5 = new ComAtprotoWeb5NS(
+  protected web5 = new FansWeb5CkbNS(
     new XrpcClient((url, init) => {
       return (0, this.fetch)(new URL(url, this.serviceUrl), init)
     }, schemas),
@@ -325,9 +325,9 @@ export class CredentialSession implements SessionManager {
    * Create a new account and hydrate its session in this agent.
    */
   async web5CreateAccount(
-    data: ComAtprotoWeb5CreateAccount.InputSchema,
-    opts?: ComAtprotoWeb5CreateAccount.CallOptions,
-  ): Promise<ComAtprotoWeb5CreateAccount.Response> {
+    data: FansWeb5CkbCreateAccount.InputSchema,
+    opts?: FansWeb5CkbCreateAccount.CallOptions,
+  ): Promise<FansWeb5CkbCreateAccount.Response> {
     try {
       const res = await this.web5.createAccount(data, opts)
       this.session = {
@@ -388,7 +388,7 @@ export class CredentialSession implements SessionManager {
    */
   async web5Login(
     opts: AtpAgentWeb5LoginOpts,
-  ): Promise<ComAtprotoWeb5IndexAction.Response> {
+  ): Promise<FansWeb5CkbIndexAction.Response> {
     try {
       const res = await this.web5.indexAction({
         did: opts.did,
@@ -398,8 +398,8 @@ export class CredentialSession implements SessionManager {
         ckbAddr: opts.ckbAddr,
         index: opts.index
       })
-      if (ComAtprotoWeb5IndexAction.isCreateSessionResult(res.data.result)) {
-        const result = res.data.result as ComAtprotoWeb5IndexAction.CreateSessionResult
+      if (FansWeb5CkbIndexAction.isCreateSessionResult(res.data.result)) {
+        const result = res.data.result as FansWeb5CkbIndexAction.CreateSessionResult
         this.session = {
           accessJwt: result.accessJwt,
           refreshJwt: result.refreshJwt,

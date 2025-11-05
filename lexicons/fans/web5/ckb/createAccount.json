@@ -1,6 +1,6 @@
 {
   "lexicon": 1,
-  "id": "com.atproto.web5.createAccount",
+  "id": "fans.web5.ckb.createAccount",
   "defs": {
     "main": {
       "type": "procedure",

@@ -13,7 +13,7 @@ import {
 
 const is$typed = _is$typed,
   validate = _validate
-const id = 'com.atproto.web5.directWrites'
+const id = 'fans.web5.ckb.directWrites'
 
 export type QueryParams = {}
 
@@ -63,7 +63,7 @@ export function toKnownErr(e: any) {
 
 /** Operation which creates a new record. */
 export interface Create {
-  $type?: 'com.atproto.web5.directWrites#create'
+  $type?: 'fans.web5.ckb.directWrites#create'
   collection: string
   /** NOTE: maxLength is redundant with record-key format. Keeping it temporarily to ensure backwards compatibility. */
   rkey?: string
@@ -82,7 +82,7 @@ export function validateCreate<V>(v: V) {
 
 /** Operation which updates an existing record. */
 export interface Update {
-  $type?: 'com.atproto.web5.directWrites#update'
+  $type?: 'fans.web5.ckb.directWrites#update'
   collection: string
   rkey: string
   value: { [_ in string]: unknown }
@@ -100,7 +100,7 @@ export function validateUpdate<V>(v: V) {
 
 /** Operation which deletes an existing record. */
 export interface Delete {
-  $type?: 'com.atproto.web5.directWrites#delete'
+  $type?: 'fans.web5.ckb.directWrites#delete'
   collection: string
   rkey: string
 }
@@ -116,7 +116,7 @@ export function validateDelete<V>(v: V) {
 }
 
 export interface SignedRoot {
-  $type?: 'com.atproto.web5.directWrites#signedRoot'
+  $type?: 'fans.web5.ckb.directWrites#signedRoot'
   did: string
   rev: string
   data: string

@@ -13,7 +13,7 @@ import {
 
 const is$typed = _is$typed,
   validate = _validate
-const id = 'com.atproto.web5.indexQuery'
+const id = 'fans.web5.ckb.indexQuery'
 
 export type QueryParams = {}
 
@@ -63,7 +63,7 @@ export function toKnownErr(e: any) {
 }
 
 export interface FirstItem {
-  $type?: 'com.atproto.web5.indexQuery#firstItem'
+  $type?: 'fans.web5.ckb.indexQuery#firstItem'
 }
 
 const hashFirstItem = 'firstItem'
@@ -77,7 +77,7 @@ export function validateFirstItem<V>(v: V) {
 }
 
 export interface SecondItem {
-  $type?: 'com.atproto.web5.indexQuery#secondItem'
+  $type?: 'fans.web5.ckb.indexQuery#secondItem'
 }
 
 const hashSecondItem = 'secondItem'
@@ -91,7 +91,7 @@ export function validateSecondItem<V>(v: V) {
 }
 
 export interface ThirdItem {
-  $type?: 'com.atproto.web5.indexQuery#thirdItem'
+  $type?: 'fans.web5.ckb.indexQuery#thirdItem'
   /** Identifier supported by the server for the authenticating user. */
   did: string
 }
@@ -107,7 +107,7 @@ export function validateThirdItem<V>(v: V) {
 }
 
 export interface FourthItem {
-  $type?: 'com.atproto.web5.indexQuery#fourthItem'
+  $type?: 'fans.web5.ckb.indexQuery#fourthItem'
   /** Identifier supported by the server for the authenticating user. */
   did: string
 }
@@ -123,7 +123,7 @@ export function validateFourthItem<V>(v: V) {
 }
 
 export interface FirstItemResult {
-  $type?: 'com.atproto.web5.indexQuery#firstItemResult'
+  $type?: 'fans.web5.ckb.indexQuery#firstItemResult'
   result: number
 }
 
@@ -138,7 +138,7 @@ export function validateFirstItemResult<V>(v: V) {
 }
 
 export interface SecondItemResult {
-  $type?: 'com.atproto.web5.indexQuery#secondItemResult'
+  $type?: 'fans.web5.ckb.indexQuery#secondItemResult'
   result: number
 }
 
@@ -153,7 +153,7 @@ export function validateSecondItemResult<V>(v: V) {
 }
 
 export interface ThirdItemResult {
-  $type?: 'com.atproto.web5.indexQuery#thirdItemResult'
+  $type?: 'fans.web5.ckb.indexQuery#thirdItemResult'
   result: number
 }
 
@@ -168,7 +168,7 @@ export function validateThirdItemResult<V>(v: V) {
 }
 
 export interface FourthItemResult {
-  $type?: 'com.atproto.web5.indexQuery#fourthItemResult'
+  $type?: 'fans.web5.ckb.indexQuery#fourthItemResult'
   result: string
 }
 

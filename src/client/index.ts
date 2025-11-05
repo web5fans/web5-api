@@ -100,14 +100,6 @@ import * as ComAtprotoTempAddReservedHandle from './types/com/atproto/temp/addRe
 import * as ComAtprotoTempCheckSignupQueue from './types/com/atproto/temp/checkSignupQueue.js'
 import * as ComAtprotoTempFetchLabels from './types/com/atproto/temp/fetchLabels.js'
 import * as ComAtprotoTempRequestPhoneVerification from './types/com/atproto/temp/requestPhoneVerification.js'
-import * as ComAtprotoWeb5CreateAccount from './types/com/atproto/web5/createAccount.js'
-import * as ComAtprotoWeb5DirectWrites from './types/com/atproto/web5/directWrites.js'
-import * as ComAtprotoWeb5IndexAction from './types/com/atproto/web5/indexAction.js'
-import * as ComAtprotoWeb5IndexQuery from './types/com/atproto/web5/indexQuery.js'
-import * as ComAtprotoWeb5PreCreateAccount from './types/com/atproto/web5/preCreateAccount.js'
-import * as ComAtprotoWeb5PreDirectWrites from './types/com/atproto/web5/preDirectWrites.js'
-import * as ComAtprotoWeb5PreIndexAction from './types/com/atproto/web5/preIndexAction.js'
-import * as ComAtprotoWeb5UploadBlob from './types/com/atproto/web5/uploadBlob.js'
 import * as AppBskyActorDefs from './types/app/bsky/actor/defs.js'
 import * as AppBskyActorGetPreferences from './types/app/bsky/actor/getPreferences.js'
 import * as AppBskyActorGetProfile from './types/app/bsky/actor/getProfile.js'
@@ -279,6 +271,14 @@ import * as ToolsOzoneVerificationDefs from './types/tools/ozone/verification/de
 import * as ToolsOzoneVerificationGrantVerifications from './types/tools/ozone/verification/grantVerifications.js'
 import * as ToolsOzoneVerificationListVerifications from './types/tools/ozone/verification/listVerifications.js'
 import * as ToolsOzoneVerificationRevokeVerifications from './types/tools/ozone/verification/revokeVerifications.js'
+import * as FansWeb5CkbCreateAccount from './types/fans/web5/ckb/createAccount.js'
+import * as FansWeb5CkbDirectWrites from './types/fans/web5/ckb/directWrites.js'
+import * as FansWeb5CkbIndexAction from './types/fans/web5/ckb/indexAction.js'
+import * as FansWeb5CkbIndexQuery from './types/fans/web5/ckb/indexQuery.js'
+import * as FansWeb5CkbPreCreateAccount from './types/fans/web5/ckb/preCreateAccount.js'
+import * as FansWeb5CkbPreDirectWrites from './types/fans/web5/ckb/preDirectWrites.js'
+import * as FansWeb5CkbPreIndexAction from './types/fans/web5/ckb/preIndexAction.js'
+import * as FansWeb5CkbUploadBlob from './types/fans/web5/ckb/uploadBlob.js'
 
 export * as ComAtprotoAdminDefs from './types/com/atproto/admin/defs.js'
 export * as ComAtprotoAdminDeleteAccount from './types/com/atproto/admin/deleteAccount.js'
@@ -371,14 +371,6 @@ export * as ComAtprotoTempAddReservedHandle from './types/com/atproto/temp/addRe
 export * as ComAtprotoTempCheckSignupQueue from './types/com/atproto/temp/checkSignupQueue.js'
 export * as ComAtprotoTempFetchLabels from './types/com/atproto/temp/fetchLabels.js'
 export * as ComAtprotoTempRequestPhoneVerification from './types/com/atproto/temp/requestPhoneVerification.js'
-export * as ComAtprotoWeb5CreateAccount from './types/com/atproto/web5/createAccount.js'
-export * as ComAtprotoWeb5DirectWrites from './types/com/atproto/web5/directWrites.js'
-export * as ComAtprotoWeb5IndexAction from './types/com/atproto/web5/indexAction.js'
-export * as ComAtprotoWeb5IndexQuery from './types/com/atproto/web5/indexQuery.js'
-export * as ComAtprotoWeb5PreCreateAccount from './types/com/atproto/web5/preCreateAccount.js'
-export * as ComAtprotoWeb5PreDirectWrites from './types/com/atproto/web5/preDirectWrites.js'
-export * as ComAtprotoWeb5PreIndexAction from './types/com/atproto/web5/preIndexAction.js'
-export * as ComAtprotoWeb5UploadBlob from './types/com/atproto/web5/uploadBlob.js'
 export * as AppBskyActorDefs from './types/app/bsky/actor/defs.js'
 export * as AppBskyActorGetPreferences from './types/app/bsky/actor/getPreferences.js'
 export * as AppBskyActorGetProfile from './types/app/bsky/actor/getProfile.js'
@@ -550,6 +542,14 @@ export * as ToolsOzoneVerificationDefs from './types/tools/ozone/verification/de
 export * as ToolsOzoneVerificationGrantVerifications from './types/tools/ozone/verification/grantVerifications.js'
 export * as ToolsOzoneVerificationListVerifications from './types/tools/ozone/verification/listVerifications.js'
 export * as ToolsOzoneVerificationRevokeVerifications from './types/tools/ozone/verification/revokeVerifications.js'
+export * as FansWeb5CkbCreateAccount from './types/fans/web5/ckb/createAccount.js'
+export * as FansWeb5CkbDirectWrites from './types/fans/web5/ckb/directWrites.js'
+export * as FansWeb5CkbIndexAction from './types/fans/web5/ckb/indexAction.js'
+export * as FansWeb5CkbIndexQuery from './types/fans/web5/ckb/indexQuery.js'
+export * as FansWeb5CkbPreCreateAccount from './types/fans/web5/ckb/preCreateAccount.js'
+export * as FansWeb5CkbPreDirectWrites from './types/fans/web5/ckb/preDirectWrites.js'
+export * as FansWeb5CkbPreIndexAction from './types/fans/web5/ckb/preIndexAction.js'
+export * as FansWeb5CkbUploadBlob from './types/fans/web5/ckb/uploadBlob.js'
 
 export const COM_ATPROTO_MODERATION = {
   DefsReasonSpam: 'com.atproto.moderation.defs#reasonSpam',
@@ -602,6 +602,7 @@ export class AtpBaseClient extends XrpcClient {
   app: AppNS
   chat: ChatNS
   tools: ToolsNS
+  fans: FansNS
 
   constructor(options: FetchHandler | FetchHandlerOptions) {
     super(options, schemas)
@@ -609,6 +610,7 @@ export class AtpBaseClient extends XrpcClient {
     this.app = new AppNS(this)
     this.chat = new ChatNS(this)
     this.tools = new ToolsNS(this)
+    this.fans = new FansNS(this)
   }
 
   /** @deprecated use `this` instead */
@@ -638,7 +640,6 @@ export class ComAtprotoNS {
   server: ComAtprotoServerNS
   sync: ComAtprotoSyncNS
   temp: ComAtprotoTempNS
-  web5: ComAtprotoWeb5NS
 
   constructor(client: XrpcClient) {
     this._client = client
@@ -651,7 +652,6 @@ export class ComAtprotoNS {
     this.server = new ComAtprotoServerNS(client)
     this.sync = new ComAtprotoSyncNS(client)
     this.temp = new ComAtprotoTempNS(client)
-    this.web5 = new ComAtprotoWeb5NS(client)
   }
 }
 
@@ -1735,103 +1735,6 @@ export class ComAtprotoTempNS {
   ): Promise<ComAtprotoTempRequestPhoneVerification.Response> {
     return this._client.call(
       'com.atproto.temp.requestPhoneVerification',
-      opts?.qp,
-      data,
-      opts,
-    )
-  }
-}
-
-export class ComAtprotoWeb5NS {
-  _client: XrpcClient
-
-  constructor(client: XrpcClient) {
-    this._client = client
-  }
-
-  createAccount(
-    data?: ComAtprotoWeb5CreateAccount.InputSchema,
-    opts?: ComAtprotoWeb5CreateAccount.CallOptions,
-  ): Promise<ComAtprotoWeb5CreateAccount.Response> {
-    return this._client
-      .call('com.atproto.web5.createAccount', opts?.qp, data, opts)
-      .catch((e) => {
-        throw ComAtprotoWeb5CreateAccount.toKnownErr(e)
-      })
-  }
-
-  directWrites(
-    data?: ComAtprotoWeb5DirectWrites.InputSchema,
-    opts?: ComAtprotoWeb5DirectWrites.CallOptions,
-  ): Promise<ComAtprotoWeb5DirectWrites.Response> {
-    return this._client
-      .call('com.atproto.web5.directWrites', opts?.qp, data, opts)
-      .catch((e) => {
-        throw ComAtprotoWeb5DirectWrites.toKnownErr(e)
-      })
-  }
-
-  indexAction(
-    data?: ComAtprotoWeb5IndexAction.InputSchema,
-    opts?: ComAtprotoWeb5IndexAction.CallOptions,
-  ): Promise<ComAtprotoWeb5IndexAction.Response> {
-    return this._client
-      .call('com.atproto.web5.indexAction', opts?.qp, data, opts)
-      .catch((e) => {
-        throw ComAtprotoWeb5IndexAction.toKnownErr(e)
-      })
-  }
-
-  indexQuery(
-    data?: ComAtprotoWeb5IndexQuery.InputSchema,
-    opts?: ComAtprotoWeb5IndexQuery.CallOptions,
-  ): Promise<ComAtprotoWeb5IndexQuery.Response> {
-    return this._client
-      .call('com.atproto.web5.indexQuery', opts?.qp, data, opts)
-      .catch((e) => {
-        throw ComAtprotoWeb5IndexQuery.toKnownErr(e)
-      })
-  }
-
-  preCreateAccount(
-    data?: ComAtprotoWeb5PreCreateAccount.InputSchema,
-    opts?: ComAtprotoWeb5PreCreateAccount.CallOptions,
-  ): Promise<ComAtprotoWeb5PreCreateAccount.Response> {
-    return this._client
-      .call('com.atproto.web5.preCreateAccount', opts?.qp, data, opts)
-      .catch((e) => {
-        throw ComAtprotoWeb5PreCreateAccount.toKnownErr(e)
-      })
-  }
-
-  preDirectWrites(
-    data?: ComAtprotoWeb5PreDirectWrites.InputSchema,
-    opts?: ComAtprotoWeb5PreDirectWrites.CallOptions,
-  ): Promise<ComAtprotoWeb5PreDirectWrites.Response> {
-    return this._client
-      .call('com.atproto.web5.preDirectWrites', opts?.qp, data, opts)
-      .catch((e) => {
-        throw ComAtprotoWeb5PreDirectWrites.toKnownErr(e)
-      })
-  }
-
-  preIndexAction(
-    data?: ComAtprotoWeb5PreIndexAction.InputSchema,
-    opts?: ComAtprotoWeb5PreIndexAction.CallOptions,
-  ): Promise<ComAtprotoWeb5PreIndexAction.Response> {
-    return this._client
-      .call('com.atproto.web5.preIndexAction', opts?.qp, data, opts)
-      .catch((e) => {
-        throw ComAtprotoWeb5PreIndexAction.toKnownErr(e)
-      })
-  }
-
-  uploadBlob(
-    data?: ComAtprotoWeb5UploadBlob.InputSchema,
-    opts?: ComAtprotoWeb5UploadBlob.CallOptions,
-  ): Promise<ComAtprotoWeb5UploadBlob.Response> {
-    return this._client.call(
-      'com.atproto.web5.uploadBlob',
       opts?.qp,
       data,
       opts,
@@ -5142,5 +5045,117 @@ export class ToolsOzoneVerificationNS {
       data,
       opts,
     )
+  }
+}
+
+export class FansNS {
+  _client: XrpcClient
+  web5: FansWeb5NS
+
+  constructor(client: XrpcClient) {
+    this._client = client
+    this.web5 = new FansWeb5NS(client)
+  }
+}
+
+export class FansWeb5NS {
+  _client: XrpcClient
+  ckb: FansWeb5CkbNS
+
+  constructor(client: XrpcClient) {
+    this._client = client
+    this.ckb = new FansWeb5CkbNS(client)
+  }
+}
+
+export class FansWeb5CkbNS {
+  _client: XrpcClient
+
+  constructor(client: XrpcClient) {
+    this._client = client
+  }
+
+  createAccount(
+    data?: FansWeb5CkbCreateAccount.InputSchema,
+    opts?: FansWeb5CkbCreateAccount.CallOptions,
+  ): Promise<FansWeb5CkbCreateAccount.Response> {
+    return this._client
+      .call('fans.web5.ckb.createAccount', opts?.qp, data, opts)
+      .catch((e) => {
+        throw FansWeb5CkbCreateAccount.toKnownErr(e)
+      })
+  }
+
+  directWrites(
+    data?: FansWeb5CkbDirectWrites.InputSchema,
+    opts?: FansWeb5CkbDirectWrites.CallOptions,
+  ): Promise<FansWeb5CkbDirectWrites.Response> {
+    return this._client
+      .call('fans.web5.ckb.directWrites', opts?.qp, data, opts)
+      .catch((e) => {
+        throw FansWeb5CkbDirectWrites.toKnownErr(e)
+      })
+  }
+
+  indexAction(
+    data?: FansWeb5CkbIndexAction.InputSchema,
+    opts?: FansWeb5CkbIndexAction.CallOptions,
+  ): Promise<FansWeb5CkbIndexAction.Response> {
+    return this._client
+      .call('fans.web5.ckb.indexAction', opts?.qp, data, opts)
+      .catch((e) => {
+        throw FansWeb5CkbIndexAction.toKnownErr(e)
+      })
+  }
+
+  indexQuery(
+    data?: FansWeb5CkbIndexQuery.InputSchema,
+    opts?: FansWeb5CkbIndexQuery.CallOptions,
+  ): Promise<FansWeb5CkbIndexQuery.Response> {
+    return this._client
+      .call('fans.web5.ckb.indexQuery', opts?.qp, data, opts)
+      .catch((e) => {
+        throw FansWeb5CkbIndexQuery.toKnownErr(e)
+      })
+  }
+
+  preCreateAccount(
+    data?: FansWeb5CkbPreCreateAccount.InputSchema,
+    opts?: FansWeb5CkbPreCreateAccount.CallOptions,
+  ): Promise<FansWeb5CkbPreCreateAccount.Response> {
+    return this._client
+      .call('fans.web5.ckb.preCreateAccount', opts?.qp, data, opts)
+      .catch((e) => {
+        throw FansWeb5CkbPreCreateAccount.toKnownErr(e)
+      })
+  }
+
+  preDirectWrites(
+    data?: FansWeb5CkbPreDirectWrites.InputSchema,
+    opts?: FansWeb5CkbPreDirectWrites.CallOptions,
+  ): Promise<FansWeb5CkbPreDirectWrites.Response> {
+    return this._client
+      .call('fans.web5.ckb.preDirectWrites', opts?.qp, data, opts)
+      .catch((e) => {
+        throw FansWeb5CkbPreDirectWrites.toKnownErr(e)
+      })
+  }
+
+  preIndexAction(
+    data?: FansWeb5CkbPreIndexAction.InputSchema,
+    opts?: FansWeb5CkbPreIndexAction.CallOptions,
+  ): Promise<FansWeb5CkbPreIndexAction.Response> {
+    return this._client
+      .call('fans.web5.ckb.preIndexAction', opts?.qp, data, opts)
+      .catch((e) => {
+        throw FansWeb5CkbPreIndexAction.toKnownErr(e)
+      })
+  }
+
+  uploadBlob(
+    data?: FansWeb5CkbUploadBlob.InputSchema,
+    opts?: FansWeb5CkbUploadBlob.CallOptions,
+  ): Promise<FansWeb5CkbUploadBlob.Response> {
+    return this._client.call('fans.web5.ckb.uploadBlob', opts?.qp, data, opts)
   }
 }

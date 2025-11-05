@@ -13,22 +13,27 @@ import {
 
 const is$typed = _is$typed,
   validate = _validate
-const id = 'com.atproto.web5.preIndexAction'
+const id = 'fans.web5.ckb.indexAction'
 
 export type QueryParams = {}
 
 export interface InputSchema {
   /** Identifier supported by the server for the authenticating user. */
   did: string
+  /** DID PLC signing key to be included in PLC creation operation. */
+  signingKey: string
+  message: string
+  signedBytes: string
   /** Ckb address (see: https://github.com/nervosnetwork/rfcs/blob/master/rfcs/0021-ckb-address-format/0021-ckb-address-format.md) */
   ckbAddr?: string
   index: $Typed<CreateSession> | $Typed<DeleteAccount> | { $type: string }
 }
 
 export interface OutputSchema {
-  did: string
-  handle: string
-  message: string
+  result:
+    | $Typed<CreateSessionResult>
+    | $Typed<DeleteAccountResult>
+    | { $type: string }
 }
 
 export interface CallOptions {
@@ -59,7 +64,7 @@ export function toKnownErr(e: any) {
 }
 
 export interface CreateSession {
-  $type?: 'com.atproto.web5.preIndexAction#createSession'
+  $type?: 'fans.web5.ckb.indexAction#createSession'
 }
 
 const hashCreateSession = 'createSession'
@@ -73,7 +78,7 @@ export function validateCreateSession<V>(v: V) {
 }
 
 export interface DeleteAccount {
-  $type?: 'com.atproto.web5.preIndexAction#deleteAccount'
+  $type?: 'fans.web5.ckb.indexAction#deleteAccount'
 }
 
 const hashDeleteAccount = 'deleteAccount'
@@ -84,4 +89,43 @@ export function isDeleteAccount<V>(v: V) {
 
 export function validateDeleteAccount<V>(v: V) {
   return validate<DeleteAccount & V>(v, id, hashDeleteAccount)
+}
+
+export interface CreateSessionResult {
+  $type?: 'fans.web5.ckb.indexAction#createSessionResult'
+  accessJwt: string
+  refreshJwt: string
+  handle: string
+  did: string
+  didDoc?: { [_ in string]: unknown }
+  email?: string
+  emailConfirmed?: boolean
+  emailAuthFactor?: boolean
+  active?: boolean
+  /** If active=false, this optional field indicates a possible reason for why the account is not active. If active=false and no status is supplied, then the host makes no claim for why the repository is no longer being hosted. */
+  status?: 'takendown' | 'suspended' | 'deactivated' | (string & {})
+}
+
+const hashCreateSessionResult = 'createSessionResult'
+
+export function isCreateSessionResult<V>(v: V) {
+  return is$typed(v, id, hashCreateSessionResult)
+}
+
+export function validateCreateSessionResult<V>(v: V) {
+  return validate<CreateSessionResult & V>(v, id, hashCreateSessionResult)
+}
+
+export interface DeleteAccountResult {
+  $type?: 'fans.web5.ckb.indexAction#deleteAccountResult'
+}
+
+const hashDeleteAccountResult = 'deleteAccountResult'
+
+export function isDeleteAccountResult<V>(v: V) {
+  return is$typed(v, id, hashDeleteAccountResult)
+}
+
+export function validateDeleteAccountResult<V>(v: V) {
+  return validate<DeleteAccountResult & V>(v, id, hashDeleteAccountResult)
 }
